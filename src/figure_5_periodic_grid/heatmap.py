@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from graphs import grid_graph
 
 from ..utils import setup
-from ..common import is_undirected, GraphGenerator, last_vertex
+from .common import is_undirected, GraphGenerator, last_vertex
 
 ROUND = lambda steps, precision: (steps // precision) * precision
 
