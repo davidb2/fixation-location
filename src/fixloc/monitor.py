@@ -204,3 +204,117 @@ def islands_watch(n=10, m12=1e-3, m21=1e-1, rs=np.linspace(1.0, 1.5, 51), quanti
     out[name] = {k: cross(out[one][k], out[two][k]) for k in keys}
   out['r_star'] = cross(out['p1_last_island1'], [0.5] * len(rs))
   return out
+
+
+QS = (0.25, 0.5, 0.75, 0.9, 'exp')
+
+
+def watch_ranks(G, r, skip_at=0.5):
+  '''Rank of the optimal vertex to monitor among the vertices ordered by fixation location probability.
+
+  The initial vertex is uniformly random and the chain is conditioned on fixation. The optimal vertex has the largest
+  f_t / m_w(t) at the expected fixation time ('exp') and at the first times with f_t at 0.25, 0.5, 0.75, and 0.9.
+  Returns None if all vertices are equivalent at the time given by skip_at.
+  '''
+  c = Chain(G, r)
+  N = c.N
+  p0 = np.zeros(2**N)
+  p0[1 << np.arange(N)] = c.rho / c.rho.sum()
+  T_exp = float((c.rho * c.Tfix_moran).sum() / c.rho.sum())
+  tT = int(round(T_exp))
+  _, f, m = watch_curves(c, p0, stop_at=0.905, min_t=tT + 1)
+  Pl = (c.rho / c.rho.sum()) @ np.clip(c.L, 0, None)
+  order = np.argsort(-Pl)
+  ts = tT if skip_at == 'exp' else first_time(f, skip_at)
+  with np.errstate(divide='ignore', invalid='ignore'):
+    ps = f[ts] / m[ts]
+  if Pl.max() - Pl.min() < 1e-12 and ps.max() - ps.min() < 1e-12:
+    return None
+  row = dict(
+    g6=nx.to_graph6_bytes(G, header=False).decode().strip() if not G.is_directed() else None,
+    P_last_max=float(Pl.max()),
+    t_median=first_time(f, 0.5),
+    T_expected=T_exp,
+    f_at_expected=float(f[tT]),
+  )
+  for q in QS:
+    tq = tT if q == 'exp' else first_time(f, q)
+    with np.errstate(divide='ignore', invalid='ignore'):
+      pq = f[tq] / m[tq]
+    best = pq.max()
+    row[f'rank_best_{q}'] = int(np.flatnonzero(pq[order] >= best - 1e-12)[0]) + 1
+    row[f'pf_best_{q}'] = float(best)
+    row[f'pf_likeliest_{q}'] = float(pq[order[0]])
+    row[f'pf_mean_{q}'] = float(np.mean(pq))
+  row.update(rank_best=row['rank_best_0.5'], pf_best=row['pf_best_0.5'], pf_likeliest=row['pf_likeliest_0.5'])
+  row['pf_random'] = row['pf_mean_0.5']
+  return row
+
+
+def rank_shares(rows):
+  '''Shares of the graphs on which the optimal vertex is the likeliest or one of the two likeliest fixation
+  locations.'''
+  out = dict(evaluated=len(rows))
+  for q in QS:
+    rb = np.array([x[f'rank_best_{q}'] for x in rows])
+    out[f'share_rank1_{q}'] = float(np.mean(rb == 1))
+    out[f'share_rank_le2_{q}'] = float(np.mean(rb <= 2))
+  return out
+
+
+def binary_entropy(p):
+  p = np.clip(p, 1e-300, 1)
+  q = np.clip(1 - p, 1e-300, 1)
+  return -(p * np.log2(p) + q * np.log2(q))
+
+
+def information(f, m):
+  '''Information in bits between fixation by t and the observation of mutants, where fixation implies the
+  observation.'''
+  return binary_entropy(f) - m * binary_entropy(np.where(m > 0, f / np.maximum(m, 1e-300), 0))
+
+
+def watch_pairs(G, r, levels=(0.25, 0.5, 0.75)):
+  '''Monitoring with one or two vertices, from a uniformly random initial vertex and conditional on fixation.
+
+  At the first times with f_t at the levels, M2[a, b] is the probability of mutants at a and b at the same time. The
+  information about fixation by t from the types at the monitored vertices is averaged over the levels.
+  '''
+  c = Chain(G, r)
+  N, full = c.N, c.full
+  prior = c.rho / c.rho.sum()
+  x = np.zeros(2**N)
+  x[1 << np.arange(N)] = prior
+  M = ((np.arange(2**N)[:, None] >> np.arange(N)[None, :]) & 1).astype(float)
+  PT = conditioned(c)
+  snaps, t = {}, 0
+  while len(snaps) < len(levels):
+    for q in levels:
+      if q not in snaps and x[full] >= q:
+        snaps[q] = (t, x.copy())
+    x = PT @ x
+    t += 1
+  single, pair = np.zeros(N), np.zeros((N, N))
+  iu = np.triu_indices(N, 1)
+  least = {}
+  for q, (t, x) in snaps.items():
+    f = x[full]
+    m = M.T @ x
+    mm = M.T @ (x[:, None] * M)
+    single += information(f, m) / len(levels)
+    pair += information(f, mm) / len(levels)
+    k = int(np.argmin(mm[iu]))
+    least[str(q)] = dict(t=t, f=float(f), pair=[int(iu[0][k]), int(iu[1][k])], M2=float(mm[iu][k]))
+  last = prior @ c.L
+  bi = int(np.argmax(pair[iu]))
+  top2 = tuple(sorted(np.argsort(-last)[:2].tolist()))
+  return dict(
+    nodes=[str(v) for v in c.nodes],
+    r=float(r),
+    P_last=last.tolist(),
+    best_pair=[int(iu[0][bi]), int(iu[1][bi])],
+    best_pair_bits=float(pair[iu][bi]),
+    top2_last_pair=list(top2),
+    top2_last_pair_bits=float(pair[top2]),
+    least_mutant_pair=least,
+  )

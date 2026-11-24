@@ -143,3 +143,19 @@ def p1_grid(r, n=10, ms=np.linspace(1e-4, 1, 100)):
   '''p1 for N = 2n on a grid of migration probabilities, with rows m21 and columns m12.'''
   ms = [float(m) for m in ms]
   return dict(m12=ms, m21=ms, p1=[[p1_migration(2 * n, m12, m21, r) for m12 in ms] for m21 in ms])
+
+
+def r_star(N, m12=1e-3, m21=1e-1, rs=np.round(np.linspace(1.0, 1.6, 25), 4)):
+  '''Unbiased fitness r*, with p1 = 1/2 from one mutant on island 1, by linear interpolation on the grid rs.'''
+  p = np.array([last_island(float(r), N // 2, m12, m21)['p1_start_island1'] for r in rs])
+  cross = np.where(np.diff(np.sign(p - 0.5)) != 0)[0]
+  if not len(cross):
+    return None, p
+  j = cross[0]
+  return float(rs[j] + (0.5 - p[j]) * (rs[j + 1] - rs[j]) / (p[j + 1] - p[j])), p
+
+
+def p1_linear(r, m12=1e-3, m21=1e-1):
+  '''p1 from the slow eigenvector of the rare wild type linearization M_r.'''
+  d = (2 * r - 1) * (m21 - m12)
+  return 2 * m21 / (2 * m21 + d + np.sqrt(d**2 + 4 * m12 * m21))

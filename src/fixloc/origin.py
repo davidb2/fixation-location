@@ -119,3 +119,47 @@ def scores(args):
       time_steps_tracked=int(F.shape[0]),
     )
   return out
+
+
+def memory(g6s, MI, amp):
+  '''Range of the mutual information between the initial vertex and the fixation location over a set of graphs, and its
+  rank correlations with features of the graphs.'''
+  from scipy.stats import spearmanr
+
+  feat = {k: [] for k in ('diameter', 'mean distance', 'links', 'minimum degree', 'cut vertices')}
+  graphs = [nx.from_graph6_bytes(s.encode() if isinstance(s, str) else bytes(s)) for s in g6s]
+  for G in graphs:
+    d = np.array([k for _, k in G.degree()])
+    feat['diameter'].append(nx.diameter(G))
+    feat['mean distance'].append(nx.average_shortest_path_length(G))
+    feat['links'].append(G.number_of_edges())
+    feat['minimum degree'].append(int(d.min()))
+    feat['cut vertices'].append(len(list(nx.articulation_points(G))))
+  o = dict(
+    n_graphs=int(len(MI)),
+    MI_min=float(MI.min()),
+    MI_median=float(np.median(MI)),
+    MI_max=float(MI.max()),
+    spearman={k: float(spearmanr(MI, v)[0]) for k, v in feat.items()},
+  )
+  o['spearman']['amplification factor'] = float(spearmanr(MI, amp)[0])
+  G = graphs[int(np.argmax(MI))]
+  o['max_graph'] = dict(
+    links=G.number_of_edges(), diameter=nx.diameter(G), degrees=sorted((k for _, k in G.degree()), reverse=True)
+  )
+  o.update(near_complete(graphs, MI))
+  return o
+
+
+def near_complete(graphs, MI):
+  '''The five graphs with the least mutual information, and the rank of every graph with at most two edges missing from
+  the complete graph, each with the number of missing edges.'''
+  n = len(graphs[0])
+  miss = np.array([n * (n - 1) // 2 - G.number_of_edges() for G in graphs])
+  rank = np.empty(len(MI), int)
+  rank[np.argsort(MI)] = np.arange(1, len(MI) + 1)
+  near = np.flatnonzero(miss <= 2)
+  return dict(
+    lowest=[dict(MI=float(MI[i]), missing_links=int(miss[i])) for i in np.argsort(MI)[:5]],
+    near_complete=[dict(missing_links=int(miss[i]), MI=float(MI[i]), rank=int(rank[i])) for i in near],
+  )

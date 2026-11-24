@@ -1,0 +1,19 @@
+{
+ "r": 2.0,
+ "M_per_truth": 4000,
+ "pairs": 17294,
+ "seconds": 518.7666058540344,
+ "censored": 0,
+ "median": {
+  "location": 218.0,
+  "origin_location": 131.0,
+  "origin_time": 348.0
+ },
+ "share_location_beats_origin_time": 0.7678963802474846,
+ "share_location_beats_origin_location": 0.0,
+ "share_origin_location_beats_origin_time": 0.9591765930380479,
+ "exact_over_bound_median": {
+  "location": 0.5875683146836368,
+  "origin_time": 0.5868790307822958
+ }
+}

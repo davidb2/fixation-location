@@ -58,3 +58,28 @@ def drift(N, r):
 def corrected_center(N, r):
   '''E[H] from the theorem without the exponentially small term.'''
   return (N - 1) * r / (r - 1) - (r + 1) / (r - 1) ** 2
+
+
+def neutral_deviation(N):
+  '''Largest deviation max_k |N p_k - 1| at r = 1, from the first passage law of the unbiased walk of the block length.
+
+  q_j is the probability that the walk from 1 first hits N at step j without hitting 0. A run with j active steps has
+  (j + N - 1) / 2 head advances, so p_k = sum of q_j over j = 2(k + iN) + N - 1.'''
+  x = np.zeros(N + 1)
+  x[1] = 1.0
+  q = []
+  while True:
+    y = np.zeros_like(x)
+    y[1 : N - 1] += 0.5 * x[2:N]
+    y[2:N] += 0.5 * x[1 : N - 1]
+    q.append(0.5 * x[N - 1])
+    x = y
+    if x.sum() < 1e-16:
+      break
+  q = np.array(q)
+  p = np.zeros(N)
+  for k in range(N):
+    idx = [2 * (k + j * N) + (N - 1) for j in range(len(q) // (2 * N) + 2)]
+    p[k] = N * sum(q[i - 1] for i in idx if 1 <= i <= len(q))
+  dev = float(np.abs(N * p - 1).max())
+  return dict(sum_p=float(p.sum()), max_abs_N_pk_minus_1=dev, times_sqrtN=dev * np.sqrt(N))

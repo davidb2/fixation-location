@@ -1,0 +1,218 @@
+{
+ "1.25": {
+  "n_graphs": 11117,
+  "MI_min": 0.0036286109283374395,
+  "MI_median": 0.07828306816138333,
+  "MI_max": 0.6115651315209166,
+  "spearman": {
+   "diameter": 0.7817101792314712,
+   "mean distance": 0.7847174571397721,
+   "links": -0.658789629107406,
+   "minimum degree": -0.8359449961321556,
+   "cut vertices": 0.7982006601816802,
+   "amplification factor": 0.6076217853836614
+  },
+  "max_graph": {
+   "links": 7,
+   "diameter": 7,
+   "degrees": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1
+   ]
+  },
+  "lowest": [
+   {
+    "MI": 0.0036286109283374395,
+    "missing_links": 0
+   },
+   {
+    "MI": 0.00476135902708344,
+    "missing_links": 1
+   },
+   {
+    "MI": 0.005180398611654733,
+    "missing_links": 4
+   },
+   {
+    "MI": 0.005209567527096111,
+    "missing_links": 2
+   },
+   {
+    "MI": 0.00529176857808414,
+    "missing_links": 3
+   }
+  ],
+  "near_complete": [
+   {
+    "missing_links": 2,
+    "MI": 0.007331650780424806,
+    "rank": 22
+   },
+   {
+    "missing_links": 2,
+    "MI": 0.005209567527096111,
+    "rank": 4
+   },
+   {
+    "missing_links": 1,
+    "MI": 0.00476135902708344,
+    "rank": 2
+   },
+   {
+    "missing_links": 0,
+    "MI": 0.0036286109283374395,
+    "rank": 1
+   }
+  ]
+ },
+ "2.0": {
+  "n_graphs": 11117,
+  "MI_min": 0.008596535593641003,
+  "MI_median": 0.11638926869712106,
+  "MI_max": 0.5991211905457074,
+  "spearman": {
+   "diameter": 0.783165276478615,
+   "mean distance": 0.8068894485734069,
+   "links": -0.6875475282720567,
+   "minimum degree": -0.8318500116935522,
+   "cut vertices": 0.7972902790399532,
+   "amplification factor": 0.6639867712352727
+  },
+  "max_graph": {
+   "links": 9,
+   "diameter": 5,
+   "degrees": [
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ]
+  },
+  "lowest": [
+   {
+    "MI": 0.008596535593641003,
+    "missing_links": 0
+   },
+   {
+    "MI": 0.010702800501955633,
+    "missing_links": 1
+   },
+   {
+    "MI": 0.011623537581096216,
+    "missing_links": 2
+   },
+   {
+    "MI": 0.011748623877030802,
+    "missing_links": 4
+   },
+   {
+    "MI": 0.011873850451539537,
+    "missing_links": 3
+   }
+  ],
+  "near_complete": [
+   {
+    "missing_links": 2,
+    "MI": 0.01517480285765354,
+    "rank": 17
+   },
+   {
+    "missing_links": 2,
+    "MI": 0.011623537581096216,
+    "rank": 3
+   },
+   {
+    "missing_links": 1,
+    "MI": 0.010702800501955633,
+    "rank": 2
+   },
+   {
+    "missing_links": 0,
+    "MI": 0.008596535593641003,
+    "rank": 1
+   }
+  ]
+ },
+ "10.0": {
+  "n_graphs": 11117,
+  "MI_min": 0.08086781312637248,
+  "MI_median": 0.23826499476616836,
+  "MI_max": 0.6732261964327146,
+  "spearman": {
+   "diameter": 0.7840692454190091,
+   "mean distance": 0.855230333185476,
+   "links": -0.7527483581930723,
+   "minimum degree": -0.7112872987375009,
+   "cut vertices": 0.6659114802154981,
+   "amplification factor": 0.4117765410006467
+  },
+  "max_graph": {
+   "links": 11,
+   "diameter": 4,
+   "degrees": [
+    4,
+    3,
+    3,
+    3,
+    3,
+    2,
+    2,
+    2
+   ]
+  },
+  "lowest": [
+   {
+    "MI": 0.08086781312637248,
+    "missing_links": 0
+   },
+   {
+    "MI": 0.08659543818999119,
+    "missing_links": 1
+   },
+   {
+    "MI": 0.09024147116807898,
+    "missing_links": 2
+   },
+   {
+    "MI": 0.09247541404169027,
+    "missing_links": 3
+   },
+   {
+    "MI": 0.09374542191159024,
+    "missing_links": 4
+   }
+  ],
+  "near_complete": [
+   {
+    "missing_links": 2,
+    "MI": 0.09617045724465445,
+    "rank": 6
+   },
+   {
+    "missing_links": 2,
+    "MI": 0.09024147116807898,
+    "rank": 3
+   },
+   {
+    "missing_links": 1,
+    "MI": 0.08659543818999119,
+    "rank": 2
+   },
+   {
+    "missing_links": 0,
+    "MI": 0.08086781312637248,
+    "rank": 1
+   }
+  ]
+ }
+}

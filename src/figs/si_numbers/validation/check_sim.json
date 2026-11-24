@@ -1,0 +1,37 @@
+{
+ "small-world 7": {
+  "r": 2.0,
+  "origins_with_takeovers": 7,
+  "max_z_rho": 2.1137143904405185,
+  "max_z_location": 1.9872108085292117,
+  "max_z_duration": 1.4834854691722628,
+  "cells_checked": 49,
+  "max_z_node_state_at_checkpoints": 2.685579336845509
+ },
+ "digraph 7": {
+  "r": 1.5,
+  "origins_with_takeovers": 7,
+  "max_z_rho": 1.0229587613818691,
+  "max_z_location": 2.715602997716074,
+  "max_z_duration": 1.6758407692125443,
+  "cells_checked": 49,
+  "max_z_node_state_at_checkpoints": 1.4096409305164117
+ },
+ "Fig 1 graph (sink)": {
+  "r": 1.25,
+  "origins_with_takeovers": 2,
+  "max_z_rho": 0.6864730472189753,
+  "max_z_location": 1.8027609920893763,
+  "max_z_duration": 0.7994624275452608,
+  "cells_checked": 24
+ },
+ "cycle 9": {
+  "r": 2.0,
+  "origins_with_takeovers": 9,
+  "max_z_rho": 1.5347262205303085,
+  "max_z_location": 2.2482339799685715,
+  "max_z_duration": 0.8423884949851808,
+  "cells_checked": 81,
+  "max_z_node_state_at_checkpoints": 2.8335460603558618
+ }
+}

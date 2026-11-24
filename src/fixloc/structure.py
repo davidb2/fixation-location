@@ -152,3 +152,229 @@ def time_block(llr, cdf, ck, seed, m=125):
     s = cs[:, -1]
     done += step
   return out
+
+
+def similar_pairs(r=2.0, tol=0.01, N=7):
+  '''Pairs of connected graphs with fixation probabilities and fixation times within tol of each other, compared by the
+  total variation distance between their sorted fixation location distributions, a lower bound under any relabeling.'''
+  from fixloc.census import graphs
+
+  gs = graphs(N)
+  R, T, S = [], [], []
+  for g in gs:
+    c = Chain(g, r)
+    w = c.rho / c.rho.sum()
+    R.append(float(c.rho.mean()))
+    T.append(float((w * c.Tfix_moran).sum()))
+    S.append(np.sort(w @ np.clip(c.L, 0, None))[::-1])
+  R, T, S = np.array(R), np.array(T), np.array(S)
+  dR = np.abs(R[:, None] - R[None, :]) / R[None, :]
+  dT = np.abs(T[:, None] - T[None, :]) / T[None, :]
+  TV = 0.5 * np.abs(S[:, None, :] - S[None, :, :]).sum(-1)
+  close = (dR < tol) & (dT < tol)
+  np.fill_diagonal(close, False)
+  i, j = np.unravel_index(np.argmax(np.where(close, TV, -1)), TV.shape)
+  example = dict(
+    gids=[int(i), int(j)],
+    rho=[R[i], R[j]],
+    T=[T[i], T[j]],
+    tv=float(TV[i, j]),
+    signatures=[S[i].round(4).tolist(), S[j].round(4).tolist()],
+    edges=[sorted(map(list, gs[i].edges())), sorted(map(list, gs[j].edges()))],
+  )
+  return dict(
+    r=r,
+    tolerance=tol,
+    graphs=len(gs),
+    close_pairs=int(close.sum() // 2),
+    tv_max=float(TV[close].max()),
+    share_tv_above_0p1=float((TV[close] > 0.1).mean()),
+    share_tv_above_0p2=float((TV[close] > 0.2).mean()),
+    example=example,
+  )
+
+
+def laws(G, r, tol=1e-11):
+  '''Laws of the observation of one fixation event: the fixation location v, the pair (u, v), and the pair (t, u).'''
+  c = Chain(G, r)
+  F = c.time_distribution(tol=tol)
+  F = F / F.sum()
+  return F.sum(axis=(0, 1)), F.sum(axis=0).ravel(), F.sum(axis=2)
+
+
+def pad(P, Q):
+  '''Two laws of (t, u) on a common range of times, flattened.'''
+  T = max(P.shape[0], Q.shape[0])
+  if P.shape[0] < T:
+    P = np.concatenate([P, np.zeros((T - P.shape[0],) + P.shape[1:])])
+  if Q.shape[0] < T:
+    Q = np.concatenate([Q, np.zeros((T - Q.shape[0],) + Q.shape[1:])])
+  return P.ravel(), Q.ravel()
+
+
+def bhattacharyya_n(P0, P1):
+  '''Number of observations at which the bound on the probability of a wrong choice equals 0.05.'''
+  B = -np.log(min(np.sqrt(np.clip(P0, 0, None) * np.clip(P1, 0, None)).sum(), 1.0))
+  return float(np.log(10) / B) if B > 1e-15 else float('inf')
+
+
+def n_exact(P0, P1, M, rng, level=0.05, block=256, cap_factor=2.0):
+  '''Smallest n with a correct choice between P0 and P1 with probability at least 1 - level, from M sequences simulated
+  under each law, ties counted as half. The search stops at cap_factor times the bound. Returns (n, bound).'''
+  P0 = np.clip(np.asarray(P0, float), 0, None)
+  P1 = np.clip(np.asarray(P1, float), 0, None)
+  P0 = P0 / P0.sum()
+  P1 = P1 / P1.sum()
+  nb = bhattacharyya_n(P0, P1)
+  if not np.isfinite(nb):
+    return float('nan'), nb
+  ok0, ok1 = P0 > 0, P1 > 0
+  both = ok0 & ok1
+  ell = np.zeros(P0.size)
+  ell[both] = np.log(P1[both]) - np.log(P0[both])
+  ell[ok1 & ~ok0] = 1e6
+  ell[ok0 & ~ok1] = -1e6
+  cdf0, cdf1 = np.cumsum(P0), np.cumsum(P1)
+  cdf0[-1] = cdf1[-1] = 1.0
+  S0, S1 = np.zeros(M), np.zeros(M)
+  done = 0
+  cap = int(np.ceil(cap_factor * nb)) + block
+  while done < cap:
+    k = min(block, cap - done)
+    X0 = np.searchsorted(cdf0, rng.random((M, k)))
+    X1 = np.searchsorted(cdf1, rng.random((M, k)))
+    C0 = S0[:, None] + np.cumsum(ell[X0], axis=1)
+    C1 = S1[:, None] + np.cumsum(ell[X1], axis=1)
+    err = 0.5 * ((C0 > 0).mean(0) + 0.5 * (C0 == 0).mean(0) + (C1 < 0).mean(0) + 0.5 * (C1 == 0).mean(0))
+    hit = np.flatnonzero(err <= level)
+    if hit.size:
+      return float(done + hit[0] + 1), nb
+    S0, S1 = C0[:, -1], C1[:, -1]
+    done += k
+  return float('nan'), nb
+
+
+def rivals(edges, N=7):
+  '''Connected graphs obtained by adding or removing one edge, as (a, b, kind, graph).'''
+  import itertools
+
+  G = nx.Graph()
+  G.add_nodes_from(range(N))
+  G.add_edges_from(edges)
+  for a, b in itertools.combinations(range(N), 2):
+    H = G.copy()
+    kind = 'remove' if H.has_edge(a, b) else 'add'
+    H.remove_edge(a, b) if kind == 'remove' else H.add_edge(a, b)
+    if nx.is_connected(H):
+      yield a, b, kind, H
+
+
+def exact_test_rows(args, seed=2026):
+  '''Observed fixation events for a correct choice between a graph and each rival, for the fixation location, the
+  initial vertex with the fixation location, and the initial vertex with the fixation time.'''
+  gid, edges, r, M = args
+  rng = np.random.default_rng([seed, gid, int(round(100 * r))])
+  G = nx.Graph()
+  G.add_nodes_from(range(7))
+  G.add_edges_from(edges)
+  L0, OL0, OT0 = laws(G, r)
+  out = []
+  for a, b, kind, H in rivals(edges):
+    L1, OL1, OT1 = laws(H, r)
+    A0, A1 = pad(OT0, OT1)
+    res = [n_exact(P0, P1, M, rng) for P0, P1 in ((L0, L1), (OL0, OL1), (A0, A1))]
+    out.append((gid, a, b, kind) + tuple(x for p in res for x in p))
+  return out
+
+
+EXACT_COLS = ['gid', 'a', 'b', 'kind']
+EXACT_COLS += [f'{k}_{q}' for q in ('location', 'origin_location', 'origin_time') for k in ('n', 'bound')]
+
+
+def exact_test_summary(r, M, rows):
+  A = np.array([x[4:] for x in rows], float)
+  nl, no, nt = A[:, 0], A[:, 2], A[:, 4]
+  med = lambda x: float(np.nanmedian(x))
+  return dict(
+    r=r,
+    M_per_truth=M,
+    pairs=len(rows),
+    censored=int(np.isnan(A[:, [0, 2, 4]]).sum()),
+    median=dict(location=med(nl), origin_location=med(no), origin_time=med(nt)),
+    share_location_beats_origin_time=float(np.mean(nl < nt)),
+    share_location_beats_origin_location=float(np.mean(nl < no)),
+    share_origin_location_beats_origin_time=float(np.mean(no < nt)),
+    exact_over_bound_median=dict(location=med(nl / A[:, 1]), origin_time=med(nt / A[:, 5])),
+  )
+
+
+def location_law(G, r):
+  '''Fixation location distribution with a uniformly random initial vertex, conditional on fixation.'''
+  c = Chain(G, r)
+  w = c.rho / c.rho.sum()
+  return np.clip(w @ c.L, 0, None)
+
+
+def gof_lambda(df=6, level=0.05, power=0.8):
+  '''Noncentrality of the Pearson test with the given level and power.'''
+  from scipy.optimize import brentq
+  from scipy.stats import chi2, ncx2
+
+  crit = chi2.ppf(1 - level, df)
+  return brentq(lambda l: ncx2.sf(crit, df, l) - power, 0.1, 200)
+
+
+def n_gof(P0, P1, lam):
+  '''Observations for the Pearson test of P0 with power 0.8 when P1 is true, capped by the observations for one fixation
+  event at a vertex that P0 excludes.'''
+  forb = (P0 < 1e-12) & (P1 > 1e-12)
+  ok = P0 >= 1e-12
+  D = (((P1[ok] - P0[ok]) ** 2) / P0[ok]).sum()
+  n = lam / D if D > 0 else np.inf
+  if forb.any():
+    n = min(n, np.log(5) / P1[forb].sum())
+  return n
+
+
+def n_lr(P0, P1):
+  B = -np.log(min(np.sqrt(P0 * P1).sum(), 1.0))
+  return np.log(10) / B if B > 0 else np.inf
+
+
+def location_only_rows(args):
+  '''The fixation location law of a graph and the test counts against each rival.'''
+  gid, edges, r, lam = args
+  G = nx.Graph()
+  G.add_nodes_from(range(7))
+  G.add_edges_from(edges)
+  P0 = location_law(G, r)
+  out = []
+  for a, b, kind, H in rivals(edges):
+    P1 = location_law(H, r)
+    out.append((gid, a, b, kind, n_gof(P0, P1, lam), n_lr(P0, P1), float(np.abs(P0 - P1).sum() / 2)))
+  return gid, P0, out
+
+
+def location_only_summary(r, res, gs, lam):
+  '''Medians of the test counts and the graphs that the sorted fixation location law does not separate.'''
+  rows = [x for _, _, o in res for x in o]
+  ng = np.array([x[4] for x in rows])
+  nl = np.array([x[5] for x in rows])
+  S = np.array([np.sort(P0) for _, P0, _ in res])
+  D = np.abs(S[:, None, :] - S[None, :, :]).max(-1)
+  np.fill_diagonal(D, np.inf)
+  tied = np.where(D.min(1) < 1e-9)[0]
+  vt = [i for i in range(len(gs)) if np.allclose(res[i][1], 1 / 7, atol=1e-9)]
+  return dict(
+    r=r,
+    pairs=len(rows),
+    lam=lam,
+    n_gof_median=float(np.median(ng)),
+    n_lr_median=float(np.median(nl)),
+    n_gof_q=[float(np.quantile(ng, x)) for x in (0.1, 0.25, 0.75, 0.9)],
+    frac_gof_le_100=float((ng <= 100).mean()),
+    frac_inf=float(np.isinf(ng).mean()),
+    graphs_tied=len(tied),
+    graphs_uniform_law=len(vt),
+    uniform_law_edges=[sorted(gs[i].edges()) for i in vt],
+  )

@@ -1,0 +1,90 @@
+{
+ "n": 10,
+ "N": 20,
+ "m12": 0.001,
+ "m21": 0.1,
+ "temperature_island1": 1.099,
+ "temperature_island2": 0.901,
+ "rows": [
+  {
+   "r": 1.0,
+   "rho_from_island1": 0.000990099009900988,
+   "rho_from_island2": 0.09900990099009882,
+   "p1_start_island1": 0.7476231155010041,
+   "p1_start_island2": 0.9177786041364542,
+   "p1_uniform_initial_vertex": 0.9160938963281825
+  },
+  {
+   "r": 1.1,
+   "rho_from_island1": 0.002559034363350105,
+   "rho_from_island2": 0.14771988681261036,
+   "p1_start_island1": 0.6464731601346203,
+   "p1_start_island2": 0.8833251444708833,
+   "p1_uniform_initial_vertex": 0.8792918950823383
+  },
+  {
+   "r": 1.2,
+   "rho_from_island1": 0.006021834827989051,
+   "rho_from_island2": 0.19974008946244715,
+   "p1_start_island1": 0.5520275187218419,
+   "p1_start_island2": 0.8502728480600646,
+   "p1_uniform_initial_vertex": 0.8415443910450587
+  },
+  {
+   "r": 1.26,
+   "rho_from_island1": 0.009663072498653433,
+   "rho_from_island2": 0.23104141362915673,
+   "p1_start_island1": 0.5016665329790386,
+   "p1_start_island2": 0.8321895730669477,
+   "p1_uniform_initial_vertex": 0.8189207381140798
+  },
+  {
+   "r": 1.3,
+   "rho_from_island1": 0.013033595631367783,
+   "rho_from_island2": 0.2516210074221935,
+   "p1_start_island1": 0.4710747821872268,
+   "p1_start_island2": 0.8209879037116276,
+   "p1_uniform_initial_vertex": 0.8037555333714236
+  },
+  {
+   "r": 1.5,
+   "rho_from_island1": 0.048160354139318545,
+   "rho_from_island2": 0.3483907954981739,
+   "p1_start_island1": 0.35166473764181333,
+   "p1_start_island2": 0.7744746679870848,
+   "p1_uniform_initial_vertex": 0.7231252367783657
+  },
+  {
+   "r": 2.0,
+   "rho_from_island1": 0.3084086599648853,
+   "rho_from_island2": 0.5339450742710284,
+   "p1_start_island1": 0.20489368405886058,
+   "p1_start_island2": 0.7079260393242508,
+   "p1_uniform_initial_vertex": 0.5237521842073102
+  },
+  {
+   "r": 3.0,
+   "rho_from_island1": 0.6203344264315953,
+   "rho_from_island2": 0.7005058822714347,
+   "p1_start_island1": 0.11041867454612712,
+   "p1_start_island2": 0.6902068214777847,
+   "p1_uniform_initial_vertex": 0.41790853893078245
+  },
+  {
+   "r": 5.0,
+   "rho_from_island1": 0.7770872301788943,
+   "rho_from_island2": 0.8211490132938764,
+   "p1_start_island1": 0.058100909138844505,
+   "p1_start_island2": 0.6955302935670262,
+   "p1_uniform_initial_vertex": 0.38560224832158474
+  },
+  {
+   "r": 10.0,
+   "rho_from_island1": 0.8888256836790758,
+   "rho_from_island2": 0.9107451368353514,
+   "p1_start_island1": 0.027348770490856256,
+   "p1_start_island2": 0.7024990242463519,
+   "p1_uniform_initial_vertex": 0.36903569007827103
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "sizes": [
+  3,
+  4
+ ],
+ "random_graphs": 2000,
+ "seed": 1,
+ "cases_checked": 18576,
+ "mismatches": 0
+}

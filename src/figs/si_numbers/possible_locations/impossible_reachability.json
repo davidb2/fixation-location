@@ -1,0 +1,15 @@
+{
+ "graphs": 986,
+ "finite_r_graphs_with_impossible": {
+  "star": 3,
+  "path": 3
+ },
+ "totals": {
+  "path": 3,
+  "star": 3,
+  "other tree": 14,
+  "has a cycle": 966
+ },
+ "colonization_pairs_matching_theorem": 6748,
+ "colonization_mismatches": []
+}
