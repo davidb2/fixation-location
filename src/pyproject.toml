@@ -1,0 +1,20 @@
+[build-system]
+requires = ['setuptools>=64']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'fixloc'
+version = '1.0.0'
+description = 'Code for the paper Fixation location in structured populations'
+requires-python = '>=3.11'
+dependencies = ['numpy', 'scipy', 'pandas', 'networkx', 'matplotlib', 'pillow', 'jupyter']
+
+[tool.setuptools.packages.find]
+include = ['fixloc*']
+
+[tool.ruff]
+indent-width = 2
+line-length = 110
+
+[tool.ruff.format]
+quote-style = 'single'
