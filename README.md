@@ -9,6 +9,7 @@ Martin A. Nowak ([arXiv:2605.26411](https://arxiv.org/abs/2605.26411)).
 src/
   fixloc/          Python package: exact solver, figure style, and the methods behind every data set
     make/          one module per figure, which computes the data of each panel
+    sim/           the C++ simulator sweepsim and its Python reader
   figs/
     fig1/          one folder per figure, with the figure notebook fig1.ipynb and the image fig1.png
       a/           one folder per panel, with the panel notebook a.ipynb, its data.json, and a.png
@@ -46,6 +47,15 @@ The figures need a LaTeX installation with the `newtx` fonts, because the text i
 To recompute the data of a figure, run its module from `src/`, for example `python -m fixloc.make.fig1`.
 The module overwrites `data.json` in every panel folder of the figure.
 Some data sets take hours and were computed on a cluster.
+
+## Simulator
+
+`src/fixloc/sim/sweepsim.cpp` simulates the Birth-death process on any directed graph.
+Build it with `make -C src/fixloc/sim`. On Linux the build uses OpenMP and runs the initial vertices in parallel.
+From Python, `fixloc.sim.run(G, r, K, seed, times)` repeats runs from every initial vertex until `K` of them end in
+fixation. The function returns the initial vertex, the fixation location, and the fixation time of every run
+ending in fixation, and the mutant sets at the given times.
+The figures use the exact solver. The simulator gives the results on networks with 50 to 200 vertices in the SI.
 
 ## Notation
 
