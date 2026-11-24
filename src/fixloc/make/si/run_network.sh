@@ -5,12 +5,12 @@
 #SBATCH --mem=4G
 #SBATCH -t 02:00:00
 #SBATCH --array=0-59
-# One array task is one network of fixloc.sim.large with all its fitness values. Per fitness r:
+# One array task is one network of fixloc.large with all its fitness values. Per fitness r:
 #   pilot (K_PILOT fixation trajectories per initial vertex) gives the three times of fixation probability 0.25, 0.5, 0.75,
 #   main (K_MAIN) gives the fixation location and the guesses of the initial vertex,
 #   ck (K_CK) records the mutant sets at the three times for monitoring.
-# Setup: python -m fixloc.sim.large networks $BASE/large, then make -C $SRC/fixloc/sim.
-# After the array: python -m fixloc.sim.large gather $BASE and python -m fixloc.sim.large watch $BASE/large OUT.json.
+# Setup: python -m fixloc.large networks $BASE/large, then make -C $SRC/fixloc/sim.
+# After the array: python -m fixloc.large gather $BASE and python -m fixloc.large watch $BASE/large OUT.json.
 set -euo pipefail
 BASE=${BASE:-$PWD}
 SRC=${SRC:-$BASE/src}
@@ -26,9 +26,9 @@ i=0
 for r in $RLIST; do
   i=$((i + 1)); seed=$((ID * 100 + i * 10))
   $SIM net.txt $r $K_PILOT $((seed + 1)) pilot_r$r.bin
-  CK=$($PY -m fixloc.sim.large quartiles pilot_r$r.bin)
+  CK=$($PY -m fixloc.large quartiles pilot_r$r.bin)
   $SIM net.txt $r $K_MAIN $((seed + 2)) main_r$r.bin
   $SIM net.txt $r $K_CK $((seed + 3)) ck_r$r.bin 100000000 $CK
-  $PY -m fixloc.sim.large analyze net.txt main_r$r.bin ck_r$r.bin > summary_r$r.json
+  $PY -m fixloc.large analyze net.txt main_r$r.bin ck_r$r.bin > summary_r$r.json
   rm -f pilot_r$r.bin pilot_r$r.bin.meta
 done

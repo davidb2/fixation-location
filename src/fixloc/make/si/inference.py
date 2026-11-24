@@ -1,6 +1,6 @@
 '''SI section "Inferring the initial mutant location". Run: python -m fixloc.make.si.inference
 
-The simulated networks with N = 50 to 200 run on a cluster with fixloc.sim.large and run_network.sh, which write
+The simulated networks with N = 50 to 200 run on a cluster with fixloc.large and run_network.sh, which write
 large_summary.json. The part memory reads the tables of the factorization section for N = 8 (minutes).
 '''
 import sys

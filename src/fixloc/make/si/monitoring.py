@@ -5,7 +5,7 @@ Parts, run by name, for example python -m fixloc.make.si.monitoring fig1 pairs:
   pairs   the pair of monitored vertices on the cycle, the 2 x 5 grid, and a random 3-regular graph, N = 10 (seconds)
   all7    every connected undirected graph with N = 7 at r = 1.25, 2, and 10 (minutes)
   all9    every connected undirected graph with N = 9, one r per call, on a cluster: all9 R G6FILE [NPROC]
-The simulated networks with N = 50 to 200 come from fixloc.sim.large (cluster), which writes large_watch_rank.json.
+The simulated networks with N = 50 to 200 come from fixloc.large (cluster), which writes large_watch_rank.json.
 '''
 import os
 import sys

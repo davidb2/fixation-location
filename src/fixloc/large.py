@@ -1,13 +1,13 @@
 '''Simulated networks with N = 50 to 200 vertices: the networks, the analysis of the sweepsim output, and the summaries.
 
 The cluster run has one folder large/net<ID> per network with net.txt, rlist.txt, and meta.json, written by networks().
-run_network.sh runs, for each fitness r, a pilot run for the three times, the main run, and a run that records the
-mutant sets at the three times. Commands, from src/ on the cluster:
-  python -m fixloc.sim.large networks OUTDIR
-  python -m fixloc.sim.large quartiles PILOT.bin
-  python -m fixloc.sim.large analyze net.txt MAIN.bin CK.bin > summary_r<r>.json
-  python -m fixloc.sim.large gather BASE                (writes BASE/large_summary.json)
-  python -m fixloc.sim.large watch LARGE OUT.json       (writes the rank of the optimal vertex to monitor)
+src/fixloc/make/si/run_network.sh runs, for each fitness r, a pilot run for the three times, the main run, and a run
+that records the mutant sets at the three times. The simulator and its reader are in fixloc.sim. Commands, from src/:
+  python -m fixloc.large networks OUTDIR
+  python -m fixloc.large quartiles PILOT.bin
+  python -m fixloc.large analyze net.txt MAIN.bin CK.bin > summary_r<r>.json
+  python -m fixloc.large gather BASE                (writes BASE/large_summary.json)
+  python -m fixloc.large watch LARGE OUT.json       (writes the rank of the optimal vertex to monitor)
 Only numpy is needed, except networkx for networks().
 '''
 import glob
