@@ -1,7 +1,7 @@
 import FixLoc.Walk
 
 /-!
-# The directed cycle: SI Lemma 2 for complex `z` and the Fourier formula
+# The directed cycle: SI Lemma S2 for complex `z` and the Fourier formula
 
 `Walk.lean` proves the generating function of the number `H` of head advances for real `z > 0`.
 This file proves the same formula for every complex `z` (`gf_head_advances_complex`) and the finite
@@ -155,7 +155,7 @@ lemma canon_closedC (α β z : ℂ) (hα : α ≠ 0) (hz : z ≠ 0) :
       ring
   exact fun x => (pair x).1
 
-/-! ## SI Lemma 2 for complex `z` -/
+/-! ## SI Lemma S2 for complex `z` -/
 
 /-- First-step equations of `F x = E_x[z^H ; fixation]` for complex `z`. -/
 structure GFStepsC (α β z : ℂ) (N : ℕ) (F : ℕ → ℂ) : Prop where
@@ -163,7 +163,7 @@ structure GFStepsC (α β z : ℂ) (N : ℕ) (F : ℕ → ℂ) : Prop where
   top : F N = 1
   step : ∀ k, k + 2 ≤ N → F (k + 1) = α * z * F (k + 2) + β * F k
 
-/-- SI Lemma 2, Eq. (cycle-pgf), for every complex `z`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)`. -/
+/-- SI Lemma S2, Eq. (cycle-pgf), for every complex `z`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)`. -/
 theorem gf_head_advances_complex (α β z : ℂ) (hα : α ≠ 0) (N : ℕ) (hN : 1 ≤ N)
     (F : ℕ → ℂ) (hF : GFStepsC α β z N F) :
     F 1 = (2 * α * z) ^ (N - 1) / PNc N (1 - 4 * α * β * z) := by
@@ -198,7 +198,7 @@ theorem gf_head_advances_complex (α β z : ℂ) (hα : α ≠ 0) (N : ℕ) (hN 
       eq_div_iff (pow_ne_zero _ hc), one_mul] at hsol
     exact hsol.symm
 
-/-! ## The Fourier formula (SI Lemma 2, Eq. (cycle-fourier)) -/
+/-! ## The Fourier formula (SI Lemma S2, Eq. (cycle-fourier)) -/
 
 /-- `ω = e^(2πi/N)`. -/
 def rootN (N : ℕ) : ℂ := exp (2 * π * I / N)
@@ -234,7 +234,7 @@ lemma dvd_iff_mod (N k h : ℕ) (hk1 : 1 ≤ k) (hkN : k ≤ N) :
   rw [Nat.add_mod_right, Nat.mod_eq_of_lt (by omega : k - 1 < N)]
   exact eq_comm
 
-/-- SI Lemma 2, Eq. (cycle-fourier): for every distribution `q` of `H` on `ℕ`, the fixation location
+/-- SI Lemma S2, Eq. (cycle-fourier): for every distribution `q` of `H` on `ℕ`, the fixation location
 `1 + (H mod N)` is vertex `k` with the probability given by the finite Fourier sum. -/
 theorem fourier_location (N : ℕ) (hN : 1 ≤ N) (q : ℕ → ℝ) (hq : ∀ h, 0 ≤ q h) (hs : Summable q)
     (k : ℕ) (hk1 : 1 ≤ k) (hkN : k ≤ N) :

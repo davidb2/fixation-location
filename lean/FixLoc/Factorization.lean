@@ -1,7 +1,7 @@
 import FixLoc.Colonization
 
 /-!
-# Fixation location, fixation probability, and escape counts (SI Proposition 1)
+# Fixation location, fixation probability, and escape counts (SI Proposition S1)
 
 The Birth-death process is described by its jump chain on mutant sets (SI, computational methods).
 An active step from the mutant set `X` is an event `a → b` (offspring of `a` placed on the
@@ -15,7 +15,7 @@ As in the other files, probabilities and expectations enter through their first-
   the homogeneous first-step equations have only the zero solution.
 * `factorization_chain`: for every finite absorbing chain, the probability of absorption through the
   transition `z → a` equals the expected number of visits to `z` times `Q(z, a)`.
-* `factorization` (SI Proposition 1): `ρ L(v | u) = n_u(V \ {v}) p_v` with
+* `factorization` (SI Proposition S1): `ρ L(v | u) = n_u(V \ {v}) p_v` with
   `p_v = r θ_v / (r θ_v + 1[d⁺(v) ≥ 1])`.
 * `reach_of_strongly_connected`: on a strongly connected graph, absorption is reachable from every
   transient mutant set.
@@ -345,7 +345,7 @@ lemma actW_erase (out : V → Finset V) (hloop : ∀ v, v ∉ out v) (r : ℝ) (
   unfold theta
   ring
 
-/-- SI Proposition 1 (factorization of the fixation location). Let `f X` be the probability of
+/-- SI Proposition S1 (factorization of the fixation location). Let `f X` be the probability of
 fixation at `v` and `g X` the expected number of active steps starting with `V \ {v}`, from the mutant
 set `X`, given by their first-step equations. Then `f = g p_v` with
 `p_v = r θ_v / (r θ_v + 1[d⁺(v) ≥ 1])`. For `X = {u}`, `f X = ρ L(v | u)` and `g X = n_u(V \ {v})`. -/
@@ -490,7 +490,7 @@ theorem reach_of_strongly_connected (out : V → Finset V) (r : ℝ) (hr : 0 < r
   obtain ⟨n, hn⟩ : ∃ n, (univ \ X).card = n + 1 := ⟨(univ \ X).card - 1, by omega⟩
   exact key n X hX hn
 
-/-- SI Proposition 1 on every strongly connected graph without self-loops. -/
+/-- SI Proposition S1 on every strongly connected graph without self-loops. -/
 theorem factorization_strongly_connected (out : V → Finset V) (hloop : ∀ v, v ∉ out v) (r : ℝ)
     (hr : 0 < r) (hsc : ∀ a b : V, ReflTransGen (fun x y => y ∈ out x) a b)
     (v : V) (f g : Finset V → ℝ)

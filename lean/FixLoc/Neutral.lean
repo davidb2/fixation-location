@@ -1,11 +1,11 @@
 import FixLoc.Fourier
 
 /-!
-# The directed cycle under neutral evolution (SI Proposition 6)
+# The directed cycle under neutral evolution (SI Proposition S6)
 
 Under neutral evolution the fixation location probabilities differ from `1/N` by
 `∑_{ℓ=1}^{N-1} ω^(-ℓk) / P_N(1 - ω^ℓ)`. This file proves the lower bound on `|P_N(1 - ω^ℓ)|` of the
-SI proof of Proposition 6.
+SI proof of Proposition S6.
 
 * `two_mul_PNc_sq`: `2x P_N(x²) = (1+x)^N - (1-x)^N`.
 * `sqrtOneSub`: an explicit square root `x` of `1 - e^(2iθ)` with `Re x ≥ √(sin θ)` and `|x|² = 2 sin θ`.
@@ -96,7 +96,7 @@ lemma sqrtOneSub_normSq (θ : ℝ) (hθ : 0 ≤ Real.sin θ) :
   have h1 := Real.sin_sq_add_cos_sq (θ / 2)
   linear_combination 2 * hs2 + (2 * (√(Real.sin θ) * √(Real.sin θ))) * h1
 
-/-- The lower bound of the SI proof of Proposition 6:
+/-- The lower bound of the SI proof of Proposition S6:
 `(1 + s)^N - 1 ≤ 2√2 s |P_N(1 - e^(2iθ))|` with `s = √(sin θ)`, for `0 < θ < π`. -/
 lemma PNc_lower (N : ℕ) (θ : ℝ) (h0 : 0 < θ) (hπ : θ < π) :
     (1 + √(Real.sin θ)) ^ N - 1

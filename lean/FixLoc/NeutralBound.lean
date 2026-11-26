@@ -1,11 +1,11 @@
 import FixLoc.Neutral
 
 /-!
-# The directed cycle under neutral evolution: the bound of SI Proposition 6
+# The directed cycle under neutral evolution: the bound of SI Proposition S6
 
 `Neutral.lean` proves the lower bound on `|P_N(1 - e^(2iθ))|`. This file proves the elementary
 inequalities of the SI proof, bounds the sum over the nontrivial roots of unity, and assembles
-SI Proposition 6 (`neutral_location`) with the explicit constant `3840 e`.
+SI Proposition S6 (`neutral_location`) with the explicit constant `3840 e`.
 -/
 
 open Finset Complex
@@ -52,7 +52,7 @@ lemma mul_exp_antitone (N s₀ s : ℝ) (h0 : 0 < s₀) (hN : 2 ≤ N * s₀) (h
         mul_le_mul_of_nonneg_right hstep (Real.exp_pos _).le
     _ = s₀ * Real.exp (-(N * s₀ / 2)) := by rw [mul_assoc, he]
 
-/-- The bound of one term of the SI proof of Proposition 6:
+/-- The bound of one term of the SI proof of Proposition S6:
 `1/|P_N(1 - e^(2iθ))| ≤ 4√2 s₀ e^(-N s₀/2)` whenever `0 < θ < π`, `N s₀ ≥ 2`, and `s₀ ≤ √(sin θ)`. -/
 lemma inv_norm_PNc_le (N : ℕ) (θ s₀ : ℝ) (h0 : 0 < θ) (hπ : θ < π) (hs₀ : 0 < s₀)
     (hNs : 2 ≤ N * s₀) (hle : s₀ ≤ √(Real.sin θ)) :
@@ -122,7 +122,7 @@ lemma sum_inv_sq_le (M : ℕ) : ∑ j ∈ range M, 1 / ((j : ℝ) + 1) ^ 2 ≤ 2
   · have hpos : (0 : ℝ) ≤ 1 / ((M : ℝ) + 1) := by positivity
     linarith [key M]
 
-/-! ## Assembly: SI Proposition 6 -/
+/-! ## Assembly: SI Proposition S6 -/
 
 /-- Under neutral evolution the fixation probability of the walk of the block length is `1/N`. -/
 lemma fixation_probability_neutral (N : ℕ) (hN : 1 ≤ N) (h : ℕ → ℝ) (hh : FixSteps 1 N h) :
@@ -306,7 +306,7 @@ lemma sum_inv_min_sq_le (N : ℕ) :
     _ ≤ 2 + 2 := add_le_add (sum_inv_sq_le _) (sum_inv_sq_le _)
     _ = 4 := by norm_num
 
-/-- SI Proposition 6 (neutral evolution), with an explicit constant. Let `q` be the distribution of
+/-- SI Proposition S6 (neutral evolution), with an explicit constant. Let `q` be the distribution of
 the number `H` of head advances conditional on fixation, and let `h` solve the first-step equations
 of the fixation probability at `r = 1`. Suppose that at every `N`-th root of unity `z` the
 generating function `∑ q(n) z^n` equals `F(1) / h(1)` for a solution `F` of the first-step equations

@@ -10,10 +10,10 @@ A vertex `t` is a possible fixation location exactly when some sequence of growt
 mutant set `V \ {t}` and a mutant in-neighbor of `t` then places the last offspring on `t`.
 
 This file models the colonization process by the growth steps (`ColReach`) and proves
-* `possible_fix_iff` (SI Proposition 4): on every finite directed graph, `t` is a possible fixation
+* `possible_fix_iff` (SI Proposition S4): on every finite directed graph, `t` is a possible fixation
   location exactly when `t ≠ u`, every other vertex is reachable from `u` by a directed path avoiding `t`,
   and `t` has an in-neighbor other than `t`;
-* `possible_fix_iff_not_cut` (SI Proposition 5): on a connected undirected graph, `t` is a possible
+* `possible_fix_iff_not_cut` (SI Proposition S5): on a connected undirected graph, `t` is a possible
   fixation location exactly when `t ≠ u` and `t` is not a cut vertex.
 -/
 
@@ -140,7 +140,7 @@ lemma colReach_erase {adj : V → V → Prop} {u t : V} (htu : t ≠ u)
         simp
   exact key _ {u} ColReach.start (by simpa using htu) rfl
 
-/-- SI Proposition 4 (possible fixation locations under colonization). -/
+/-- SI Proposition S4 (possible fixation locations under colonization). -/
 theorem possible_fix_iff (adj : V → V → Prop) (u t : V) :
     PossibleFix adj u t ↔
       t ≠ u ∧ (∀ v, v ≠ t → ReflTransGen (avoid adj t) u v) ∧ ∃ x, x ≠ t ∧ adj x t := by
@@ -155,7 +155,7 @@ theorem possible_fix_iff (adj : V → V → Prop) (u t : V) :
   · rintro ⟨htu, hreach, hin⟩
     exact ⟨colReach_erase htu hreach, hin⟩
 
-/-- SI Proposition 5 (colonization on undirected graphs): on a connected graph with symmetric
+/-- SI Proposition S5 (colonization on undirected graphs): on a connected graph with symmetric
 adjacency, `t` is a possible fixation location exactly when `t ≠ u` and `t` is not a cut vertex. -/
 theorem possible_fix_iff_not_cut (adj : V → V → Prop) (hsymm : ∀ a b, adj a b → adj b a)
     (hconn : ∀ a b, ReflTransGen adj a b) (u t : V) :

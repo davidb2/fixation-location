@@ -16,7 +16,7 @@ first-step equations (structures `GFSteps`, `FixSteps`, `UpSteps`). The probabil
 is not constructed. The first-step equations hold for the true quantities by conditioning on the
 first step.
 
-* `gf_head_advances`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)` (SI Lemma 2, for real `z > 0`).
+* `gf_head_advances`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)` (SI Lemma S2, for real `z > 0`).
 * `fixation_probability`: `P_1(fixation) = (1 - r⁻¹) / (1 - r⁻ᴺ)` for `r > 1`.
 * `mean_head_advances`: `E[H | fixation] = (N-1) r/(r-1) - (r+1)/(r-1)^2 + N(r+1)/((r-1)(r^N-1))`
   for `r > 1` (SI Theorem S3, exact mean).
@@ -90,7 +90,7 @@ lemma canon_closed (α β z : ℝ) (hα : α ≠ 0) (hz : z ≠ 0) :
       ring
   exact fun x => (pair x).1
 
-/-! ## The generating function of the number of head advances (SI Lemma 2) -/
+/-! ## The generating function of the number of head advances (SI Lemma S2) -/
 
 /-- First-step equations of `F x = E_x[z^(number of up steps) ; the walk reaches N before 0]`.
 From length `k + 1` the walk moves up with probability `α`, which multiplies by `z`, and down with
@@ -100,7 +100,7 @@ structure GFSteps (α β z : ℝ) (N : ℕ) (F : ℕ → ℝ) : Prop where
   top : F N = 1
   step : ∀ k, k + 2 ≤ N → F (k + 1) = α * z * F (k + 2) + β * F k
 
-/-- SI Lemma 2 for real `z > 0`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)`. -/
+/-- SI Lemma S2 for real `z > 0`: `E_1[z^H ; fixation] = (2αz)^(N-1) / P_N(1 - 4αβz)`. -/
 theorem gf_head_advances (α β z : ℝ) (hα : 0 < α) (hz : 0 < z) (N : ℕ) (hN : 1 ≤ N)
     (F : ℕ → ℝ) (hF : GFSteps α β z N F) :
     F 1 = (2 * α * z) ^ (N - 1) / PN N (1 - 4 * α * β * z) := by

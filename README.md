@@ -29,11 +29,12 @@ paper. Figure 3 is a single drawing with no notebook for its panel.
 | 1 | `src/figs/fig1` | a to d | `python -m fixloc.make.fig1` | |
 | 2 | `src/figs/fig2` | a to e | `python -m fixloc.make.fig2` | |
 | 3 | `src/figs/fig3` | a | none | hand drawing |
-| 4 | `src/figs/fig4` | a to g | `python -m fixloc.make.fig4` | a to d are a hand drawing |
+| 4 | `src/figs/fig4` | a to g | `python -m fixloc.make.fig4` | `python -m fixloc.make.fig4 cycles` recomputes b to d only |
 | 5 | `src/figs/fig5` | a to f | `python -m fixloc.make.fig5` | a is a hand drawing |
-| S1 | `src/figs/figS1` | a | `python -m fixloc.make.figS1` | one panel, no letter |
-| S2 | `src/figs/figS2` | a to d | `python -m fixloc.make.figS2` | |
-| S3 | `src/figs/figS3` | a | `python -m fixloc.make.figS3` | one panel, no letter |
+| S1 | `src/figs/figS1` | a, b | `python -m fixloc.make.figS1` | Charles River basin, inputs in `src/figs/si_numbers/charles` |
+| S2 | `src/figs/figS2` | a | `python -m fixloc.make.figS2` | one panel, no letter |
+| S3 | `src/figs/figS3` | a to d | `python -m fixloc.make.figS3` | |
+| S4 | `src/figs/figS4` | a | `python -m fixloc.make.figS4` | one panel, no letter |
 
 ## Running
 
@@ -55,7 +56,10 @@ Build it with `make -C src/fixloc/sim`. On Linux the build uses OpenMP and runs 
 From Python, `fixloc.sim.run(G, r, K, seed, times)` repeats runs from every initial vertex until `K` of them end in
 fixation. The function returns the initial vertex, the fixation location, and the fixation time of every run
 ending in fixation, and the mutant sets at the given times.
-The figures use the exact solver. The simulator gives the results on networks with 50 to 200 vertices in the SI.
+The main figures use the exact solver. The simulator gives the results on the river network of the Charles River basin in the SI
+(Figure S1). The network comes from HydroRIVERS v1.0 (Lehner and Grill, Hydrological Processes 27:2171, 2013) through
+`python -m fixloc.make.si.charles_basin`, whose docstring gives the download and the cluster commands. The neutral run uses
+`src/fixloc/make/si/run_network_capped.sh`, which caps the runs per initial vertex at one million.
 
 ## Notation
 

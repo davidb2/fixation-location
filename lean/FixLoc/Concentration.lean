@@ -3,7 +3,7 @@ import Mathlib.MeasureTheory.Measure.Portmanteau
 import Mathlib.Probability.CDF
 
 /-!
-# Concentration of the fixation location on the directed cycle (SI Corollary 2)
+# Concentration of the fixation location on the directed cycle (SI Corollary S2)
 
 Let `m_N = (N-1) r/(r-1) - (r+1)/(r-1)²` and `σ_r² = r(r+1)/(r-1)³`. The probability of the event
 `|H - m_N| ≤ a√N` has limit inferior at least `2Φ(a/σ_r) - 1`, where `Φ` is the standard normal
@@ -19,7 +19,7 @@ namespace FixLoc
 
 noncomputable section
 
-/-- The center `m_N = (N-1) r/(r-1) - (r+1)/(r-1)²` of SI Corollary 2. -/
+/-- The center `m_N = (N-1) r/(r-1) - (r+1)/(r-1)²` of SI Corollary S2. -/
 def mN (r : ℝ) (N : ℕ) : ℝ := ((N : ℝ) - 1) * r / (r - 1) - (r + 1) / (r - 1) ^ 2
 
 /-- The exact mean differs from `m_N` by at most `(r+1)/(r-1)²`. -/
@@ -130,7 +130,7 @@ lemma stdLaw_apply (r : ℝ) (N : ℕ) (p : PMF ℕ) (S : Set ℝ) (hS : Measura
   show (p.toMeasure.map (fun n : ℕ => ((n : ℝ) - meanH r N) / √(varH r N))) S = _
   exact Measure.map_apply measurable_from_nat hS
 
-/-- SI Corollary 2, concentration of the fixation location. Let `m_N = (N-1)r/(r-1) - (r+1)/(r-1)²`
+/-- SI Corollary S2, concentration of the fixation location. Let `m_N = (N-1)r/(r-1) - (r+1)/(r-1)²`
 and `σ_r² = r(r+1)/(r-1)³`. The probability of `|H - m_N| ≤ a√N` has limit inferior at least
 `2Φ(a/σ_r) - 1`. The event `|H - m_N| ≤ a√N` places the fixation location `1 + H` within `a√N`
 vertices of vertex `1 + m_N` (modulo `N`). -/

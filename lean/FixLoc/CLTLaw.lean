@@ -10,7 +10,7 @@ import Mathlib.Probability.ProbabilityMassFunction.Integrals
 `clt_charFun` gives the limit `e^{-τ²/2}` of the characteristic function of `(H - μ_N)/σ_N`.
 Lévy's convergence theorem (`ProbabilityMeasure.tendsto_of_tendsto_charFun` in Mathlib) turns
 this limit into convergence in distribution to the standard normal law (`clt_head_advances`).
-`clt_head_advances_of_steps` takes the first-step equations of SI Lemma 2 as the hypothesis
+`clt_head_advances_of_steps` takes the first-step equations of SI Lemma S2 as the hypothesis
 instead of the closed form of the generating function.
 -/
 
@@ -64,7 +64,7 @@ lemma charFun_stdNormal (τ : ℝ) :
 
 /-- SI Theorem S3, central limit theorem. Let `p N` be the law of the number `H` of head advances
 conditional on fixation. If the characteristic function of `p N` is the generating function of
-SI Lemma 2 divided by the fixation probability, then the law of `(H - E[H])/√Var[H]` converges
+SI Lemma S2 divided by the fixation probability, then the law of `(H - E[H])/√Var[H]` converges
 weakly to the standard normal law. -/
 theorem clt_head_advances (r : ℝ) (hr : 1 < r) (p : ℕ → PMF ℕ)
     (hgf : ∀ N, 2 ≤ N → ∀ θ : ℝ, ∑' n, (((p N n).toReal : ℝ) : ℂ) * exp ((θ : ℂ) * n * I)

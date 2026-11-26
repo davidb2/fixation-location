@@ -33,6 +33,7 @@ def seq(c_light, c_dark, name):
 CM_LAST = seq(LRED, RED, 'last')
 CM_TEMP = seq(LPURPLE, PURPLE, 'temp')
 CM_WILD = seq(LORANGE, ORANGE, 'wild')
+CM_CYC = LinearSegmentedColormap.from_list('cyc', ['#9ad097', '#6bbe7c', '#41a65c', '#2c844c', '#355c40', '#354839'])  # location on the directed cycle, Figure 4a-d
 
 RC = {
   'text.usetex': True,
@@ -263,7 +264,7 @@ def save_panel(fig, name, pad=0.03, box=None):
   meta = PngInfo()
   meta.add_text('Offset', f'{x0},{y0}')
   im.crop((x0, im.height - y1, x1, im.height - y0)).save(name + '.png', pnginfo=meta, dpi=(DPI, DPI))
-  fig.savefig(name + '.pdf', bbox_inches=Bbox([[x0 / DPI, y0 / DPI], [x1 / DPI, y1 / DPI]]))
+  fig.savefig(name + '.pdf', dpi=DPI, bbox_inches=Bbox([[x0 / DPI, y0 / DPI], [x1 / DPI, y1 / DPI]]))
   plt.close(fig)
   return show(name + '.png')
 

@@ -1,7 +1,7 @@
 import FixLoc.Factorization
 
 /-!
-# Fixation location and the final phase of fixation (SI Proposition 2)
+# Fixation location and the final phase of fixation (SI Proposition S2)
 
 One time step of the Birth-death process is an active step with probability `a(X)/W(X)`, with
 `W(X)` the total fitness, and leaves the mutant set unchanged otherwise (`stepP`). Let `τ_v X` be
@@ -12,7 +12,7 @@ probability `h(V \ {v})` of the remaining process.
 * `scale_chain`: solutions of first-step equations with a source at one state are multiples of the
   escape counts of that state.
 * `tau_eq`: `τ_v = n(V \ {v}) h(V \ {v}) W(V \ {v}) / a(V \ {v})`.
-* `final_phase` (SI Proposition 2): `T^end(u) = (r(N-1)+1)/r ∑_v L(v | u) h(V \ {v}) / θ_v`.
+* `final_phase` (SI Proposition S2): `T^end(u) = (r(N-1)+1)/r ∑_v L(v | u) h(V \ {v}) / θ_v`.
 -/
 
 open Finset Relation
@@ -152,7 +152,7 @@ lemma tau_jump (out : V → Finset V) (r : ℝ) (hr : 0 < r) [Nonempty V] (z : F
     field_simp at h1
     linarith
 
-/-- SI Proposition 2 (final phase of fixation). Let `f v X` be the probability of fixation at `v`,
+/-- SI Proposition S2 (final phase of fixation). Let `f v X` be the probability of fixation at `v`,
 `g v X` the expected number of active steps starting with `V \ {v}`, and `τ v X` the expected
 number of time steps with mutant set `V \ {v}` on the event of fixation, from the mutant set `X`,
 given by their first-step equations. Let `h` be the fixation probability. If every vertex has an

@@ -1,8 +1,8 @@
 import FixLoc.Colonization
 
 /-!
-# Possible fixation locations at finite selection (SI Theorem S1, Corollary 1, Theorem S2,
-# Proposition 3, Lemma 1)
+# Possible fixation locations at finite selection (SI Theorem S1, Corollary S1, Theorem S2,
+# Proposition S3, Lemma S1)
 
 At finite fitness `r > 0` every Birth-death event that changes the mutant set has positive
 probability. An event is a placement of an offspring of the individual at `a` on an out-neighbor `b`
@@ -14,10 +14,10 @@ the single mutant at `s` to a mutant set without `t` and the next event makes ev
 
 This file proves
 * `fixable_at_iff` (SI Theorem S1) and `bdstep_erase_univ_iff` (the second condition of Theorem S1);
-* `not_fixable_of_unreachable` and `not_fixable_of_no_in` (SI Corollary 1);
+* `not_fixable_of_unreachable` and `not_fixable_of_no_in` (SI Corollary S1);
 * `refillable_fixable` (SI Theorem S2);
-* `gateway` and `gateway_initial` (SI Proposition 3);
-* `single_in` (SI Lemma 1, for `t ≠ u`).
+* `gateway` and `gateway_initial` (SI Proposition S3);
+* `single_in` (SI Lemma S1, for `t ≠ u`).
 -/
 
 open Finset Relation
@@ -223,7 +223,7 @@ theorem fixable_at_iff (adj : V → V → Prop) (s t : V) :
   · rintro ⟨hreach, hin⟩
     exact ⟨univ.erase t, hreach, (bdstep_erase_univ_iff adj t).mpr hin, Finset.notMem_erase t univ⟩
 
-/-- SI Corollary 1, first check: a vertex unreachable from `s` rules out fixation. -/
+/-- SI Corollary S1, first check: a vertex unreachable from `s` rules out fixation. -/
 theorem not_fixable_of_unreachable (adj : V → V → Prop) (s t v : V)
     (hv : ¬ ReflTransGen adj s v) : ¬ FixableAt adj s t := by
   rintro ⟨X, hX, hstep, _⟩
@@ -235,7 +235,7 @@ theorem not_fixable_of_unreachable (adj : V → V → Prop) (s t v : V)
     exact (hsub x (by rw [hXt']; exact Finset.mem_erase.mpr ⟨hxt', Finset.mem_univ x⟩)).tail hadj
   · exact hv (hsub v (by rw [hXt']; exact Finset.mem_erase.mpr ⟨hvt, Finset.mem_univ v⟩))
 
-/-- SI Corollary 1, second check: without an in-neighbor other than `t`, fixation at `t` is
+/-- SI Corollary S1, second check: without an in-neighbor other than `t`, fixation at `t` is
 impossible. -/
 theorem not_fixable_of_no_in (adj : V → V → Prop) (s t : V) (ht : ∀ x, adj x t → x = t) :
     ¬ FixableAt adj s t := by
@@ -395,14 +395,14 @@ theorem refillable_fixable (adj : V → V → Prop) (s t : V) (k : ℕ) (u : ℕ
       rw [insert_erase_erase h0k] at hg
       exact hfill.tail hg
 
-/-- Condition (ii) of SI Proposition 3 for the vertex `t`: in every trajectory from the single
+/-- Condition (ii) of SI Proposition S3 for the vertex `t`: in every trajectory from the single
 mutant at `u` ending in fixation, once a mutant occupies `t`, a mutant occupies `t` at every later
 time. -/
 def StaysMutant (adj : V → V → Prop) (u t : V) : Prop :=
   ∀ (X : ℕ → Finset V) (m : ℕ), X 0 = {u} → (∀ i < m, BDStep adj (X i) (X (i + 1))) →
     X m = univ → ∀ i j, i ≤ j → j ≤ m → t ∈ X i → t ∈ X j
 
-/-- SI Proposition 3 (unidirectional bottlenecks). Condition (i): some vertex `w ≠ t` is reachable
+/-- SI Proposition S3 (unidirectional bottlenecks). Condition (i): some vertex `w ≠ t` is reachable
 from `u` only by paths through `t`. -/
 theorem gateway (adj : V → V → Prop) (u t w : V) (hwt : w ≠ t)
     (hi : ¬ ReflTransGen (avoid adj t) u w) (hii : StaysMutant adj u t) : ¬ FixableAt adj u t := by
@@ -429,7 +429,7 @@ theorem gateway (adj : V → V → Prop) (u t w : V) (hwt : w ≠ t)
   rw [hYm] at hlate
   exact htX' hlate
 
-/-- SI Proposition 3, last sentence: if condition (ii) holds for the initial vertex `u`, then `u` is
+/-- SI Proposition S3, last sentence: if condition (ii) holds for the initial vertex `u`, then `u` is
 not a possible fixation location. -/
 theorem gateway_initial (adj : V → V → Prop) (u : V) (hii : StaysMutant adj u u) :
     ¬ FixableAt adj u u := by
@@ -445,7 +445,7 @@ theorem gateway_initial (adj : V → V → Prop) (u : V) (hii : StaysMutant adj 
   rw [hYm] at hlate
   exact huX' hlate
 
-/-- SI Lemma 1 (single incoming neighbor), for `t ≠ u`. -/
+/-- SI Lemma S1 (single incoming neighbor), for `t ≠ u`. -/
 theorem single_in (adj : V → V → Prop) (u t x : V) (htu : t ≠ u) (hin : ∀ y, adj y t ↔ y = x)
     (hx : StaysMutant adj u x) : StaysMutant adj u t := by
   intro X m h0 hs hm i j hij hjm hti

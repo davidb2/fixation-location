@@ -1,9 +1,9 @@
 import FixLoc.NeutralBound
 
 /-!
-# The constant of SI Proposition 6
+# The constant of SI Proposition S6
 
-The SI proof of Proposition 6 gives `|p_k - 1/N| ≤ 16 C N^(-1/2) e^(-√(N/2))` with
+The SI proof of Proposition S6 gives `|p_k - 1/N| ≤ 16 C N^(-1/2) e^(-√(N/2))` with
 `C = ∑_{ℓ ≥ 1} √ℓ e^(1-√ℓ) < 10.6`. This file proves `C < 10.6` (`Cneu_lt`), the bound with
 `16 C` (`neutral_location_sharp`), and the bound with `170` (`neutral_location_170`).
 
@@ -369,20 +369,20 @@ lemma partial_le (n : ℕ) : ∑ ℓ ∈ range n, fC ((ℓ : ℝ) + 1) ≤ 9.555
   push_cast at h1 h2 h3
   linarith [partial30_le, Gt_le_30]
 
-/-- The constant `C = ∑_{ℓ ≥ 1} √ℓ e^(1-√ℓ)` of the SI proof of Proposition 6. -/
+/-- The constant `C = ∑_{ℓ ≥ 1} √ℓ e^(1-√ℓ)` of the SI proof of Proposition S6. -/
 def Cneu : ℝ := ∑' ℓ : ℕ, fC ((ℓ : ℝ) + 1)
 
 lemma summable_fC : Summable (fun ℓ : ℕ => fC ((ℓ : ℝ) + 1)) :=
   summable_of_sum_range_le (fun _ => fC_nonneg _) partial_le
 
-/-- `C < 10.6`, the numerical value in the SI proof of Proposition 6. -/
+/-- `C < 10.6`, the numerical value in the SI proof of Proposition S6. -/
 theorem Cneu_lt : Cneu < 10.6 := by
   have h := Real.tsum_le_of_sum_range_le (fun ℓ => fC_nonneg ((ℓ : ℝ) + 1)) partial_le
   have h2 : (9.55576 : ℝ) + 0.97638 < 10.6 := by norm_num
   unfold Cneu
   linarith
 
-/-! ## SI Proposition 6 with the constant `16 C` -/
+/-! ## SI Proposition S6 with the constant `16 C` -/
 
 /-- One term of the sum: `1/|P_N(1 - ω^ℓ)| ≤ (4√2/a) e^(-a) f(m)` with `a = √(N/2)` and
 `m = min(ℓ, N - ℓ)`. -/
@@ -575,7 +575,7 @@ lemma dev_le_sum (N : ℕ) (hN : 2 ≤ N) (q : ℕ → ℝ) (hq : ∀ n, 0 ≤ q
   rw [hNM]
   exact habs
 
-/-- SI Proposition 6 (neutral evolution) with the constant of the SI proof:
+/-- SI Proposition S6 (neutral evolution) with the constant of the SI proof:
 `|p_k - 1/N| ≤ 16 C N^(-1/2) e^(-√(N/2))` with `C = ∑_{ℓ ≥ 1} √ℓ e^(1-√ℓ)`. -/
 theorem neutral_location_sharp (N : ℕ) (hN : 2 ≤ N) (q : ℕ → ℝ) (hq : ∀ n, 0 ≤ q n)
     (hs : Summable q) (h : ℕ → ℝ) (hh : FixSteps 1 N h)
@@ -605,7 +605,7 @@ theorem neutral_location_sharp (N : ℕ) (hN : 2 ≤ N) (q : ℕ → ℝ) (hq : 
         rw [hcoef]
         ring
 
-/-- SI Proposition 6 with the numerical constant `170 > 16 · 10.6`. -/
+/-- SI Proposition S6 with the numerical constant `170 > 16 · 10.6`. -/
 theorem neutral_location_170 (N : ℕ) (hN : 2 ≤ N) (q : ℕ → ℝ) (hq : ∀ n, 0 ≤ q n)
     (hs : Summable q) (h : ℕ → ℝ) (hh : FixSteps 1 N h)
     (hgf : ∀ ℓ < N, ∃ F : ℕ → ℂ, GFStepsC (1 / 2) (1 / 2) (exp (2 * π * I * ℓ / N)) N F ∧

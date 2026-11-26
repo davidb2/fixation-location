@@ -1,4 +1,7 @@
-'''Figure 4: the structure test of panels e to g. Run: python -m fixloc.make.fig4'''
+'''Figure 4: the directed cycles of panels b to d and the structure test of panels e to g.
+
+Run: python -m fixloc.make.fig4 (all panels), or python -m fixloc.make.fig4 cycles (panels b to d only, a few seconds).
+'''
 from multiprocessing import Pool
 
 import numpy as np
@@ -6,6 +9,7 @@ import numpy as np
 from fixloc import structure as st
 from fixloc.exact import conditioned
 from fixloc.make import dump
+from fixloc.walk import exact_summary
 
 R = 2.0
 N = 7
@@ -117,5 +121,23 @@ def write(res):
   dump('fig4', 'g', g)
 
 
+CYCLE_N = (5, 10, 20, 30, 40)
+CYCLE_R = (1, 2, 3)
+
+
+def cycles():
+  '''Exact fixation location probabilities on the directed cycle, from a single initial mutant at vertex 1, given fixation.'''
+  return {r: [exact_summary(n, r)['offset_prob'] for n in CYCLE_N] for r in CYCLE_R}
+
+
+def write_cycles(res):
+  for panel, r in zip('bcd', CYCLE_R):
+    dump('fig4', panel, dict(r=r, N=list(CYCLE_N), P=res[r]))
+
+
 if __name__ == '__main__':
-  write(compute())
+  import sys
+
+  if sys.argv[1:] != ['cycles']:
+    write(compute())
+  write_cycles(cycles())

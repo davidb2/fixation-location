@@ -3,7 +3,7 @@ import Mathlib
 /-!
 # The polynomial `P_N` of the directed-cycle section
 
-`P_N(y) = ∑_m C(N, 2m+1) y^m` appears in Lemma 2 of the SI of "Fixation location in structured
+`P_N(y) = ∑_m C(N, 2m+1) y^m` appears in Lemma S2 of the SI of "Fixation location in structured
 populations". This file proves the three facts about `P_N` that the walk proofs use:
 the three-term recurrence `P_{n+2} = 2 P_{n+1} - (1 - y) P_n`, the first two values, and positivity
 for `y ≥ 0`.
@@ -13,7 +13,7 @@ open Finset
 
 namespace FixLoc
 
-/-- `P_N(y) = ∑_m C(N, 2m+1) y^m` (SI, Lemma 2). Terms with `2m + 1 > N` vanish, so the range
+/-- `P_N(y) = ∑_m C(N, 2m+1) y^m` (SI, Lemma S2). Terms with `2m + 1 > N` vanish, so the range
 `m ≤ N` contains every nonzero term. -/
 noncomputable def PN (N : ℕ) (y : ℝ) : ℝ :=
   ∑ m ∈ range (N + 1), (N.choose (2 * m + 1) : ℝ) * y ^ m

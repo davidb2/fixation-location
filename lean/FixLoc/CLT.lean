@@ -229,7 +229,7 @@ lemma qL_eq (r θ : ℝ) :
 
 /-- SI Theorem S3, central limit theorem: the characteristic function of `(H - μ_N)/σ_N` tends to
 `e^{-τ²/2}` for every real `τ`. The hypothesis `hgf` is the generating function of the law `q N` of
-`H` on the unit circle (SI Lemma 2, `gf_head_advances_complex`). -/
+`H` on the unit circle (SI Lemma S2, `gf_head_advances_complex`). -/
 theorem clt_charFun (r : ℝ) (hr : 1 < r) (q : ℕ → ℕ → ℝ)
     (hgf : ∀ N, 2 ≤ N → ∀ θ : ℝ, ∑' n, (q N n : ℂ) * exp ((θ : ℂ) * n * I)
         = (2 * (alpha r : ℂ) * exp ((θ : ℂ) * I)) ^ (N - 1)

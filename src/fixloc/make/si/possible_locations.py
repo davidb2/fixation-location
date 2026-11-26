@@ -3,7 +3,7 @@
 Parts, run by name:
   directed     the colonization proposition against exhaustive search on directed graphs (seconds)
   undirected   reachability on the 986 connected undirected graphs with N = 5 to 7 (about a minute)
-The exact fixation location probabilities of the graph with twelve vertices are the data of Figure S1a.
+The exact fixation location probabilities of the graph with twelve vertices are the data of Figure S2a.
 '''
 import sys
 
