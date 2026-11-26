@@ -65,7 +65,12 @@ The figures use the exact solver. The simulator gives the results on networks wi
 | $r$ | `r` | fitness of the mutant; the wild type has fitness 1 |
 | $\theta_v$ | `Chain.T`, `theta` | temperature of vertex $v$ |
 | $\rho(u)$ | `Chain.rho[u]` | fixation probability from initial vertex $u$ |
-| $h(S)$ | `Chain.h[S]` | fixation probability from the mutant set $S$, stored as a bitmask |
+| $\rho(X)$ | `Chain.h[X]` | fixation probability from the mutant set $X$, stored as a bitmask |
+| $W(X)$ | `Chain.W[X]` | total fitness with mutant set $X$ |
+| $a(X)$ | `Chain.a[X]` | sum of the weights of the edges joining a mutant and a wild type |
+| $Q(X, X')$ | `Chain.Q[X, X']` | probability of the mutant set $X'$ after the next active step from $X$ |
+| $Z(X, v)$ | `Chain.X[X, v]` | probability of fixation with fixation location $v$, from the mutant set $X$ |
+| $n_u(X)$ | `Chain.G[X, u]` | escape count: expected number of active steps from $X$, from initial vertex $u$ |
 | $L(v \mid u)$ | `Chain.L[u, v]` | probability that $v$ is the fixation location, from initial vertex $u$, given fixation |
 | fixation location probability | `location(c)`, `P_last` | the same for an initial vertex chosen uniformly, given fixation |
 | $T$ | `Chain.Tfix_moran`, `T_expected` | expected fixation time in time steps, given fixation |

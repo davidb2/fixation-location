@@ -10,7 +10,7 @@ set `X`. The first-step equation of `τ_v` counts one time step in `V \ {v}` wit
 probability `h(V \ {v})` of the remaining process.
 
 * `scale_chain`: solutions of first-step equations with a source at one state are multiples of the
-  visit counts of that state.
+  escape counts of that state.
 * `tau_eq`: `τ_v = n(V \ {v}) h(V \ {v}) W(V \ {v}) / a(V \ {v})`.
 * `final_phase` (SI Proposition 2): `T^end(u) = (r(N-1)+1)/r ∑_v L(v | u) h(V \ {v}) / θ_v`.
 -/

@@ -72,6 +72,11 @@ checked by `FixLoc/Audit.lean`.
   distribution through Lévy's continuity theorem of Mathlib (`clt_head_advances`, `clt_head_advances_of_steps`).
 - `FixLoc/Concentration.lean`: SI Corollary 2 (`concentration_location`) from the portmanteau theorem of Mathlib on the
   open intervals `(-c(k+1)/(k+2), c(k+1)/(k+2))` with `c = a/σ_r`, and `P(-c < Z < c) = 2Φ(c) - 1` (`gauss_Ioo`).
+- `FixLoc/Islands.lean`: the neutral two-island chain on the mutant counts `(a, b)` (`up1`, `dn1`, `up2`, `dn2`, `stay`,
+  `P`, `T`), the drift of the mutant counts (`drift1`, `drift2`), the harmonic function
+  `h = (m₁₂ a + m₂₁ b)/(n (m₁₂ + m₂₁))` (`harmonic`), reachability of `(n, n)` (`reach`), the neutral fixation
+  probability (`neutral_fixation`), the initial island (`neutral_initial_island`), and the algebra of the rare wild type
+  approximations (`linearization`, `colonization_linearization`, `colonization_comparison`, `neutral_comparison`).
 - `FixLoc/Audit.lean`: `#print axioms` for the headline theorems.
 
 ## The assumptions

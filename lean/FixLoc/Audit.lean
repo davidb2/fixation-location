@@ -8,6 +8,7 @@ import FixLoc.NeutralBound
 import FixLoc.NeutralConstant
 import FixLoc.CLTLaw
 import FixLoc.Concentration
+import FixLoc.Islands
 
 /-! Axioms used by the headline theorems (expected: `propext`, `Classical.choice`, `Quot.sound`). -/
 
@@ -44,3 +45,13 @@ import FixLoc.Concentration
 #print axioms FixLoc.Cneu_lt
 #print axioms FixLoc.neutral_location_sharp
 #print axioms FixLoc.neutral_location_170
+#print axioms FixLoc.Islands.drift1
+#print axioms FixLoc.Islands.drift2
+#print axioms FixLoc.Islands.harmonic
+#print axioms FixLoc.Islands.reach
+#print axioms FixLoc.Islands.neutral_fixation
+#print axioms FixLoc.Islands.neutral_initial_island
+#print axioms FixLoc.Islands.linearization
+#print axioms FixLoc.Islands.colonization_linearization
+#print axioms FixLoc.Islands.colonization_comparison
+#print axioms FixLoc.Islands.neutral_comparison

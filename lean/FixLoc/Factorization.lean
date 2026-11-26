@@ -1,7 +1,7 @@
 import FixLoc.Colonization
 
 /-!
-# Fixation location, fixation probability, and visit counts (SI Proposition 1)
+# Fixation location, fixation probability, and escape counts (SI Proposition 1)
 
 The Birth-death process is described by its jump chain on mutant sets (SI, computational methods).
 An active step from the mutant set `X` is an event `a → b` (offspring of `a` placed on the

@@ -9,7 +9,7 @@ D1 = nx.DiGraph([(0, 1), (1, 2), (2, 0), (2, 3), (3, 4), (4, 2), (4, 5), (5, 6),
 
 def solver():
   '''The Moran fixation probability on complete graphs, the isothermal theorem on regular graphs, the cycle with five
-  vertices at r = 1, and the mean of the fixation time distribution against the visit counts.'''
+  vertices at r = 1, and the mean of the fixation time distribution against the escape counts.'''
   res = {}
   for N, r in [(6, 1.0), (6, 2.0), (9, 1.5)]:
     c = Chain(nx.complete_graph(N), r)
