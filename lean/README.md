@@ -29,6 +29,7 @@ checked by `FixLoc/Audit.lean`.
 | Theorem S3, characteristic function | `FixLoc.clt_charFun` | For `r > 1` and every real `τ`, `e^(-iτE[H]/σ_N) E[e^(iτH/σ_N)] → e^(-τ²/2)` as `N → ∞`, with `σ_N² = Var[H]` and the law of `H` given through its generating function on the unit circle. |
 | Theorem S3, central limit theorem | `FixLoc.clt_head_advances`, `FixLoc.clt_head_advances_of_steps` | For `r > 1`, the law of `(H - E[H])/√Var[H]` conditional on fixation converges in distribution to the standard normal law. The hypothesis is the generating function of Lemma S2 at `z = e^(iθ)` divided by `ρ`, or the first-step equations `GFStepsC` with `E[e^(iθH)] = F(1)/ρ`. |
 | Corollary S2 (concentration of the fixation location) | `FixLoc.concentration_location` | For `r > 1` and `a > 0`, `liminf_N P(|H - m_N| ≤ a√N) ≥ 2Φ(a/σ_r) - 1`, with `m_N = (N-1)r/(r-1) - (r+1)/(r-1)²`, `σ_r² = r(r+1)/(r-1)³`, and `Φ = cdf (gaussianReal 0 1)`. |
+| Theorem S4 (large islands under colonization) | `FixLoc.LargeIslands.colonization_large_islands`, `FixLoc.LargeIslands.colonization_large_islands_symm` | If `0 < m₂₁ < m₁₂ ≤ 1`, every family `p n` of solutions of the first-step equations of the colonization process (`FirstStep`) satisfies `p n (n-1) n → 1` and `p n n (n-1) → 1` as the island size `n → ∞`: from a single mutant on either island, the probability of a fixation location on island 1 tends to 1. If `0 < m₁₂ < m₂₁ ≤ 1`, both limits are 0. |
 | Lemma S2, the polynomial `P_N` | `FixLoc.PN`, `PN_succ_succ`, `PN_pos` | `P_N(y) = ∑ C(N, 2m+1) y^m` satisfies `P_{n+2} = 2 P_{n+1} - (1 - y) P_n`, `P_0 = 0`, `P_1 = 1`, and `P_N(y) > 0` for `N ≥ 1`, `y ≥ 0`. |
 
 ## Files
@@ -76,7 +77,14 @@ checked by `FixLoc/Audit.lean`.
   `P`, `T`), the drift of the mutant counts (`drift1`, `drift2`), the harmonic function
   `h = (m₁₂ a + m₂₁ b)/(n (m₁₂ + m₂₁))` (`harmonic`), reachability of `(n, n)` (`reach`), the neutral fixation
   probability (`neutral_fixation`), the initial island (`neutral_initial_island`), and the algebra of the rare wild type
-  approximations (`linearization`, `colonization_linearization`, `colonization_comparison`, `neutral_comparison`).
+  approximations (`linearization`, `colonization_linearization`, `colonization_comparison`, `neutral_comparison`). The SI no
+  longer uses the four approximation theorems.
+- `FixLoc/LargeIslands.lean`: the colonization process on two islands of `n` individuals in the wild type counts `(u, v)`
+  (`rate₁`, `rate₂`, `pA`, `pB`, `FirstStep`), the first-step equation without the steps that change nothing (`ratio`),
+  the rate bounds (`r1_bound`, `r2_bound`), the potential `pot v = fac 1 ⋯ fac v` and its supermartingale inequality
+  (`key_step`), the bounds on `1 - p` near the end of the process (`region`) and before (`entry`), Bernoulli's inequality
+  and the size of the potential (`pow_succ_add_le`, `pot_pow_le`, `pot_le_exp`), and the limit theorem
+  (`colonization_large_islands`, `colonization_large_islands_symm`).
 - `FixLoc/Audit.lean`: `#print axioms` for the headline theorems.
 
 ## The assumptions

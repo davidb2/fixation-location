@@ -14,4 +14,5 @@ import FixLoc.CLT
 import FixLoc.CLTLaw
 import FixLoc.Concentration
 import FixLoc.Islands
+import FixLoc.LargeIslands
 import FixLoc.Audit

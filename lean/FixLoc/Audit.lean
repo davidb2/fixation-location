@@ -9,6 +9,7 @@ import FixLoc.NeutralConstant
 import FixLoc.CLTLaw
 import FixLoc.Concentration
 import FixLoc.Islands
+import FixLoc.LargeIslands
 
 /-! Axioms used by the headline theorems (expected: `propext`, `Classical.choice`, `Quot.sound`). -/
 
@@ -55,3 +56,7 @@ import FixLoc.Islands
 #print axioms FixLoc.Islands.colonization_linearization
 #print axioms FixLoc.Islands.colonization_comparison
 #print axioms FixLoc.Islands.neutral_comparison
+#print axioms FixLoc.LargeIslands.region
+#print axioms FixLoc.LargeIslands.entry
+#print axioms FixLoc.LargeIslands.colonization_large_islands
+#print axioms FixLoc.LargeIslands.colonization_large_islands_symm
