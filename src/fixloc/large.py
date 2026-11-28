@@ -8,6 +8,9 @@ that records the mutant sets at the three times. The simulator and its reader ar
   python -m fixloc.large analyze net.txt MAIN.bin CK.bin > summary_r<r>.json
   python -m fixloc.large gather BASE                (writes BASE/large_summary.json)
   python -m fixloc.large watch LARGE OUT.json       (writes the rank of the optimal vertex to monitor)
+  python -m fixloc.large expected MAIN.bin          (prints round(T), T the expected fixation time given fixation)
+  python -m fixloc.large watchT LARGE OUT.json      (writes the best vertex to sample at T, from ckT_r<r>.bin)
+src/fixloc/make/si/run_charles_T.sh records the mutant sets at T on the Charles River basin, networks 60 and 61.
 Only numpy is needed, except networkx for networks().
 '''
 import glob
@@ -329,6 +332,104 @@ def watch_ranks(large, outp, only=None, arrays=False):
   return res
 
 
+def location_law(main):
+  '''Initial vertex given fixation, fixation location probabilities, and the expected fixation time T, for a uniformly
+  random initial vertex and conditional on fixation, from the records of a main run.'''
+  N = main['N']
+  pi = main['fixes'] / np.maximum(main['runs'], 1)
+  pi = pi / pi.sum()
+  u, v, t = main['u'], main['v'], main['t']
+  n = np.bincount(u, minlength=N)
+  w = pi[u] / np.maximum(n[u], 1)
+  last = np.bincount(v, weights=w, minlength=N)
+  return pi, last, float((w * t).sum())
+
+
+def expected_time(path):
+  '''Expected fixation time T in time steps, conditional on fixation, for a uniformly random initial vertex, from a main
+  run. T equals mean_duration of analyze().'''
+  return location_law(read_records(path))[2]
+
+
+def stratified_var(X, u, pi):
+  '''Variance of the weighted mean of X over the runs ending in fixation, stratified by the initial vertex: the sum over
+  initial vertices a of pi_a^2 Var_a(X) / n_a.'''
+  var = np.zeros(X.shape[1:]) if X.ndim > 1 else 0.0
+  for a in range(len(pi)):
+    sel = u == a
+    k = int(sel.sum())
+    if pi[a] == 0 or k < 2:
+      continue
+    var = var + pi[a] ** 2 * X[sel].var(axis=0, ddof=1) / k
+  return var
+
+
+def sample_at(ck, k, pi, last):
+  '''The best vertex to sample at checkpoint k of a run with mutant sets, with standard errors.
+
+  m_w is the probability of a mutant at w at the checkpoint and f is the probability of fixation by the checkpoint, both
+  conditional on fixation. The best vertex has the smallest m_w, which is the largest f / m_w. Its rank is its position
+  among the vertices ordered by fixation location probability. z_gap is the difference of m_w between the second best
+  and the best vertex in standard errors, and z_third the difference between the third best and the second best.'''
+  N = len(pi)
+  uc, t, S = ck['u'], ck['t'], ck['state'][:, k, :].astype(float)
+  tc = int(ck['checks'][k])
+  nc = np.bincount(uc, minlength=N)
+  w = pi[uc] / np.maximum(nc[uc], 1)
+  f = float((w * (t <= tc)).sum())
+  m = w @ S
+  se = np.sqrt(stratified_var(S, uc, pi))
+  order = np.argsort(m, kind='stable')
+  best, second, third = int(order[0]), int(order[1]), int(order[2])
+  dvar = float(stratified_var(S[:, second] - S[:, best], uc, pi))
+  tvar = float(stratified_var(S[:, third] - S[:, second], uc, pi))
+  gap = float(m[second] - m[best])
+  rank = lambda x: int((last > last[x] + 1e-12).sum() + 1)
+  lk = int(np.argmax(last))
+  lvar = float(stratified_var(S[:, lk] - S[:, best], uc, pi))
+  top = [int(x) for x in np.argsort(-last, kind='stable')[:6]]
+  return dict(
+    t=tc, f=f, ck_fixations=int(len(uc)),
+    best=best, rank=rank(best), m_best=float(m[best]), se_m_best=float(se[best]),
+    second=second, rank_second=rank(second), m_second=float(m[second]),
+    gap=gap, z_gap=gap / np.sqrt(dvar) if dvar > 0 else None,
+    third=third, rank_third=rank(third), m_third=float(m[third]),
+    z_third=float((m[third] - m[second]) / np.sqrt(tvar)) if tvar > 0 else None,
+    likeliest=lk, m_likeliest=float(m[lk]), se_m_likeliest=float(se[lk]),
+    likeliest_minus_best=float(m[lk] - m[best]),
+    z_likeliest_minus_best=float((m[lk] - m[best]) / np.sqrt(lvar)) if lvar > 0 else None,
+    F_best=f / float(m[best]), F_likeliest=f / float(m[lk]),
+    top_locations=[dict(v=x, rank=rank(x), L=float(last[x]), m=float(m[x]), se_m=float(se[x])) for x in top],
+    m=m.tolist(), se_m=se.tolist(),
+  )
+
+
+def watch_at_T(netdir, r):
+  '''The best vertex to sample at the expected fixation time T of one network and fitness, from main_r<r>.bin and
+  ckT_r<r>.bin, the run that records the mutant sets at round(T) (src/fixloc/make/si/run_charles_T.sh).'''
+  main = read_records(f'{netdir}/main_r{r}.bin')
+  pi, last, T = location_law(main)
+  ck = read_records(f'{netdir}/ckT_r{r}.bin')
+  assert len(ck['checks']) == 1 and abs(ck['checks'][0] - T) <= 1, (ck['checks'], T)
+  return dict(net=int(os.path.basename(netdir)[3:]), r=float(r), N=int(main['N']), T=T,
+              fixations_main=int(len(main['u'])), last=last.tolist(), pi=pi.tolist(), at_T=sample_at(ck, 0, pi, last))
+
+
+def watch_at_T_all(large, outp, only=None):
+  res = {}
+  for netdir in sorted(glob.glob(os.path.join(large, 'net*'))):
+    if only and os.path.basename(netdir) not in only.split(','):
+      continue
+    if not os.path.exists(os.path.join(netdir, 'rlist.txt')):
+      continue
+    nid = os.path.basename(netdir)[3:]
+    for r in open(os.path.join(netdir, 'rlist.txt')).read().split():
+      if os.path.exists(f'{netdir}/ckT_r{r}.bin'):
+        res[f'{nid}:{r}'] = watch_at_T(netdir, r)
+  json.dump(res, open(outp, 'w'), indent=1)
+  return res
+
+
 if __name__ == '__main__':
   cmd, args = sys.argv[1], sys.argv[2:]
   if cmd == 'networks':
@@ -342,4 +443,9 @@ if __name__ == '__main__':
     print(len(rows), 'summaries;', len(missing), 'missing:', missing[:10])
   elif cmd == 'watch':
     res = watch_ranks(args[0], args[1], os.environ.get('ONLY'), bool(os.environ.get('ARRAYS')))
+    print('wrote', args[1], len(res), 'cases')
+  elif cmd == 'expected':
+    print(round(expected_time(args[0])))
+  elif cmd == 'watchT':
+    res = watch_at_T_all(args[0], args[1], os.environ.get('ONLY'))
     print('wrote', args[1], len(res), 'cases')

@@ -8,13 +8,13 @@ The inputs are committed in src/figs/si_numbers/charles/, next to the notebook o
   charles_basin.json              reaches and polylines, python -m fixloc.make.si.charles_basin extract DIR
   charles_network.json            the population structure, python -m fixloc.make.si.charles_basin
   charles_net.txt                 its edge list for sweepsim, python -m fixloc.make.si.charles_basin
-  sim/charles_watch_rank.json     network 60 at r = 2, 1.5, and 5, from python -m fixloc.large watch with ARRAYS=1
-  sim/charles_watch_rank_r1.json  network 61 at r = 1, the same
+  sim/charles_watch_T.json        networks 60 (r = 2, 1.5, 5) and 61 (r = 1), from python -m fixloc.large watchT
   sim/summary_r<r>.json           python -m fixloc.large analyze, run by run_network.sh and run_network_capped.sh
-  sim/main_r1.0.bin.meta          runs and fixation events per initial vertex of the neutral run, from sweepsim
-  sim/ck_r1.0.bin.meta            the same for the neutral run that records the mutant sets at three times
-The per-vertex arrays of a watch file are the fixation location probability last, the probability pi of each initial
-vertex given fixation, and the simulated fixation probability fix_prob.
+  sim/main_r<r>.bin.meta          runs and fixation events per initial vertex of the main runs, from sweepsim
+  sim/ckT_r<r>.bin.meta           the same for the runs that record the mutant sets at the expected fixation time T
+The per-vertex arrays of charles_watch_T.json are the fixation location probability last and the probability pi of each
+initial vertex given fixation, from the main run, and m and se_m, the probability of a mutant at each vertex at time
+step round(T) given fixation and its standard error.
 src/fixloc/make/si/charles_basin.py describes the download, the extraction, and the cluster runs.
 '''
 from fixloc.make import dump
@@ -34,12 +34,12 @@ def geometry():
 
 def compute():
   net = load(SECTION, 'charles_network.json')
-  w = load(SECTION, 'sim/charles_watch_rank.json')[f'60:{R}']
+  w = load(SECTION, 'sim/charles_watch_T.json')[f'60:{R}']
   assert w['N'] == net['N']
   g = geometry()
   return dict(
     a=dict(g, theta=net['theta']),
-    b=dict(g, r=R, K=w['takeovers'] // w['N'], P_last=w['last']),
+    b=dict(g, r=R, K=w['fixations_main'] // w['N'], P_last=w['last']),
   )
 
 

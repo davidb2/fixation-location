@@ -36,15 +36,17 @@ run_network_capped.sh as networks 60 and 61 of fixloc.large. From a folder BASE 
   echo 1.0 > large/net61/rlist.txt
   sbatch --array=60 src/fixloc/make/si/run_network.sh
   sbatch --array=61 src/fixloc/make/si/run_network_capped.sh
-  ARRAYS=1 ONLY=net60 PYTHONPATH=src python -m fixloc.large watch large charles_watch_rank.json
-  ARRAYS=1 ONLY=net61 PYTHONPATH=src python -m fixloc.large watch large charles_watch_rank_r1.json
+  sbatch src/fixloc/make/si/run_charles_T.sh
+  cp charles_watch_T.json src/figs/si_numbers/charles/sim/
 The runners write summary_r<r>.json into each network folder, and sweepsim writes the .meta files next to the .bin
-files. sim/ holds the two watch files, the four summaries, and main_r1.0.bin.meta and ck_r1.0.bin.meta of network 61.
-Network 60 runs r = 2, 1.5, and 5 with 100 (pilot), 4,000 (fixation locations), and 500 (mutant sets at three times)
-fixation events per initial vertex. Network 61 runs r = 1 with the same numbers, but with at most 10^6 runs per initial
-vertex in each phase. The seed of a phase is 100 ID + 10 i + 1, 2, or 3, with i the position of r in rlist.txt.
-The neutral run records the seeds 6112 and 6113 in its .meta files. The .meta files of network 60 are not kept, and the
-order 2.0, 1.5, 5.0 of its rlist.txt is the order of the keys of charles_watch_rank.json.
+files. run_charles_T.sh records the mutant sets at the expected fixation time T, conditional on fixation, and writes
+charles_watch_T.json, the best vertex to sample at T with standard errors. sim/ holds charles_watch_T.json, the four
+summaries, and the .meta files of the main runs (main_r<r>.bin.meta) and of the runs at T (ckT_r<r>.bin.meta).
+The main runs have 4,000 fixation events per initial vertex, after a pilot run of 100, and the runs at T have 4,000.
+Network 61 runs r = 1 with at most 10^6 runs per initial vertex in each phase. The seed is 100 ID + 10 i + 2 for the
+main run and 100 ID + 10 i + 4 for the run at T, with i the position of r in rlist.txt (2.0, 1.5, 5.0 for network 60).
+The .meta files record the seeds. run_network.sh also records mutant sets at three quantile times of the fixation time,
+which the SI does not use.
 '''
 import json
 import os

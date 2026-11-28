@@ -59,7 +59,9 @@ ending in fixation, and the mutant sets at the given times.
 The main figures use the exact solver. The simulator gives the results on the river network of the Charles River basin in the SI
 (Figure S1). The network comes from HydroRIVERS v1.0 (Lehner and Grill, Hydrological Processes 27:2171, 2013) through
 `python -m fixloc.make.si.charles_basin`, whose docstring gives the download and the cluster commands. The neutral run uses
-`src/fixloc/make/si/run_network_capped.sh`, which caps the runs per initial vertex at one million.
+`src/fixloc/make/si/run_network_capped.sh`, which limits the runs to one million per initial vertex.
+`src/fixloc/make/si/run_charles_T.sh` records the mutant sets at the expected fixation time T, conditional on fixation,
+and `python -m fixloc.large watchT` gives the best vertex to sample at T.
 
 ## Notation
 
